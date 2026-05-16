@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Comparador Swartz Seguros</title>
+        <link rel="stylesheet" href="css_index.css">
+    </head>
+    <body>
+        <header class="header">
+            <img src="logo-Photoroom.png" alt="Logo Swartz" class="logo__Header">
+
+            <div class="agent__Data">
+                <section class="agent__Selector">
+                    <h2>Agente:</h2>
+                    <select id="agenteSelect" class="agente__List">
+                        <option value>Seleccione Agente</option>
+                        <option value="miguel.ayala@swartz.mx">Miguel Ayala</option>
+                        <option value="aylin.bocanegra@swartz.mx">Aylin Bocanegra</option>
+                        <option value="francisco.mendoza@swrtz.mx">Francisco Mendoza</option>
+                        <option value="luis.deanda@swartz.mx">Luis De Anda</option>
+                    </select>
+                </section>
+                <p id="correoAgente">Correo: </p>
+                <p>WhatsApp: 56 1656 5222</p>
+                <p id="extensionAgente">Tel: 33 2878 5446 Ext: </p>
+            </div>
+
+            <div class="fecha">
+                Fecha: 
+                <span id="fechaCoti"></span>
+            </div>
+
+        </header> 
+        
+        <main>
+
+            <section class="client__Sec">
+
+                <div class="client__Data">
+
+                    <h1>Cliente</h1>
+
+                    <label class="client__info" for="clientName">Nombre:</label>
+                    <input id="clientName" class="client__Input" placeholder="Ingresa el Nombre del cliente">
+
+                    <label class="client__info" for="clientBdy">F. Nacimiento</label>
+                    <input id="clientBdy" class="client__Input" placeholder="DD/MM/AAAA">
+
+                    <label class="client__info" for="clientCP">C.P</label>
+                    <input id="clientCP" class="client__Input" placeholder="45130">
+
+                    <label class="client__info side__Title">Sexo</label>
+                    <div class="checkbox__Group side__Options">
+
+                        <label class="checkbox__Option" for="Femenino">
+                            <span>F</span>
+                            <input type="checkbox" id="Femenino" name="Femenino">
+                        </label>    
+
+                        <label class="checkbox__Option" for="Masculino">
+                            <span>M</span>
+                            <input type="checkbox" id="Masculino" name="Masculino">
+                        </label>    
+
+                    </div>    
+
+                </div>
+
+                <div class="unit__Data">
+
+                    <h1>Vehiculo</h1>
+
+                    <label class="unit__info" for="unitYear">Modelo</label>
+                    <input id="unitYear" class="unit__Input" placeholder="2025">
+
+                    <label class="unit__info" for="unitName">Descripción</label>
+                    <input id="unitName" class="unit__Input" placeholder="NISSAN VERSA SENSE AUT">
+
+                    <label class="unit__info side__Title">Plan</label>
+                    <div class="checkbox__Group side__Options">
+
+                        <label class="checkbox__Option" for="unitModeUber">
+                            <span>Uber</span>
+                            <input type="checkbox" id="unitModeUber">
+                        </label>    
+
+                        <label class="checkbox__Option" for="unitModeMulti">
+                            <span>Multiplataforma</span>
+                            <input type="checkbox" id="unitModeMulti">
+                        </label>    
+
+                        <label class="checkbox__Option" for="unitModeNormal">
+                            <span>Particular</span>
+                            <input type="checkbox" id="unitModeNormal">
+                        </label>    
+
+                    </div>    
+
+                </div>
+            </section>
+
+            <h4 class="table__Title">Comparativa</h4>
+
+            <section class="seg__Compara">
+
+                <div class="seg__Logohead">
+
+                    <div class="seg__LogoItem">
+                        <input type="checkbox" id="AXAlogo" name="AXA">
+                        <label for="AXAlogo" class="seg__Logo"><img src="LOGO/AXA_Logo.svg.png" alt="AXAseguro"></label>
+                    </div>
+                    
+                    <div class="seg__LogoItem">
+                        <input type="checkbox" id="GNPlogo" name="GNP">
+                        <label for="GNPlogo" class="seg__Logo2"><img src="LOGO/gnp-seguros.png" alt="GNPseguro" class="logo__Item"></label>
+                    </div>
+                    
+                    <div class="seg__LogoItem">
+                        <input type="checkbox" id="QualitasLogo" name="Qualitas">
+                        <label for="QualitasLogo" class="seg__Logo2"><img src="LOGO/qualitas_logo.png" alt="QualitasSeguro" class="logo__Item"></label>
+                    </div>
+                    
+                    <div class="seg__LogoItem">
+                        <input type="checkbox" id="BanorteLogo" name="Banorte">
+                        <label for="BanorteLogo" class="seg__Logo"><img src="LOGO/banorte.png" alt="BanorteSeguro"></label>
+                    </div>
+                    
+                    <div class="seg__LogoItem">
+                        <input type="checkbox" id="SPTlogo" name="SPT">
+                        <label for="SPTlogo" class="seg__Logo2"><img src="LOGO/images.png" alt="SPTSeguro" class="logo__Item"></label>
+                    </div>
+                    
+                    <div class="seg__LogoItem">
+                        <input type="checkbox" id="LatinoLogo" name="Latino">
+                        <label for="LatinoLogo" class="seg__Logo2"><img src="LOGO/latino seguros.png" alt="LatinoSeguro" class="logo__Item"></label>
+                    </div>
+
+                </div>
+
+                <div class="price__Table">
+
+                    <label class="price__Label">Costo Anual</label>
+                    <input class="price__Input" placeholder="$0.00">
+                    <input class="price__Input" placeholder="$0.00">
+                    <input class="price__Input" placeholder="$0.00">
+                    <input class="price__Input" placeholder="$0.00">
+                    <input class="price__Input" placeholder="$0.00">
+                    <input class="price__Input" placeholder="$0.00">
+
+                    <label class="price__Label">Otras formas<br>de pago</label>
+
+                    <div class="payment__Options">
+                        <span>Semestral</span>
+                    </div>
+
+                    <div class="payment__Options">
+                        <span>Semestral</span>
+                        <span>Trimestral</span>
+                    </div>
+
+                    <div class="payment__Options">
+                        <span>Semestral</span>
+                        <span>Trimestral</span>
+                    </div>
+
+                    <div class="payment__Options">
+                        <span>Semestral</span>
+                    </div>
+
+                    <div class="payment__Options">
+                        <span>Semestral</span>
+                    </div>
+
+                    <div class="payment__Options">
+                        <span>Semestral</span>
+                        <span>Trimestral</span>
+                    </div>
+
+                </div>
+
+                <h5 class="subtitle__Table">Sumas Aseguradas y deducibles</h5>
+
+                <div class="deducibles__Table">
+
+                    <label class="deducible__Label">Daños Materiales</label>
+
+                    <div class="coverage__Cell">
+                        <select id="smaAXA">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                            <option>Valor Comercial 110%</option>
+                        </select>
+                        <input id="valorAXA" placeholder="Valor">
+                        <select id="dmAXA">
+                            <option>Seleccione DM</option>
+                            <option>3%</option>
+                            <option>5%</option>
+                            <option>7%</option>
+                            <option>10%</option>
+                            <option>15%</option>
+                            <option>20%</option>
+                        </select>
+                    </div>
+
+                    <div class="coverage__Cell">
+                        <select id="smaGNP">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Convenido +10%</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorGNP" placeholder="Valor">
+                        <input class="dm__Input" placeholder="DM">
+                    </div>
+
+                    <div class="coverage__Cell">
+                        <select id="smaQual">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorQua" placeholder="Valor">
+                        <input class="dm__Input" placeholder="DM">
+                    </div>
+
+                    <div class="coverage__Cell">
+                        <select id="smaBanorte">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorBanorte" placeholder="Valor">
+                        <input class="dm__Input" placeholder="DM">
+                    </div>
+
+                    <div class="coverage__Cell">
+                        <select id="smaSPT">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorSPT" placeholder="Valor">
+                        <input class="dm__Input" placeholder="DM">
+                    </div>
+
+                    <div class="coverage__Cell">
+                        <select id="smaLatino">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorLatino" placeholder="Valor">
+                        <input class="dm__Input" placeholder="DM">
+                    </div>
+
+                <label class="deducible__Label">Robo Total</label>
+
+                    <select id="rbAXA" class="coverage__Input">
+                        <option>Seleccione RT</option>
+                        <option>5%</option>
+                        <option>7%</option>
+                        <option>10%</option>
+                        <option>15%</option>
+                        <option>20%</option>
+                    </select>
+                    <input class="coverage__Input rb__Input" placeholder="RT">
+                    <input class="coverage__Input rb__Input" placeholder="RT">
+                    <input class="coverage__Input rb__Input" placeholder="RT">
+                    <input class="coverage__Input rb__Input" placeholder="RT">
+                    <input class="coverage__Input rb__Input" placeholder="RT">
+
+                    <label class="deducible__Label">Responsabilidad Civil<br>Daños a Terceros</label>
+                    <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rc__Input">
+
+                    <label class="deducible__Label">Responsabilidad Civil<br>Ocupantes</label>
+                    <input class="coverage__Input rco__Input">
+                    <input class="coverage__Input rco__Input">
+                    <input class="coverage__Input rco__Input">
+                    <input class="coverage__Input rco__Input">
+                    <input class="coverage__Input rco__Input">
+                    <input class="coverage__Input rco__Input">
+
+                    <label class="deducible__Label">Gastos Médicos<br>Ocupantes</label>
+                    <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gm__Input">
+
+                    <label class="deducible__Label">Asistencia Vial</label>
+                    <input class="coverage__Input av__Input">
+                    <input class="coverage__Input av__Input">
+                    <input class="coverage__Input av__Input">
+                    <input class="coverage__Input av__Input">
+                    <input class="coverage__Input av__Input">
+                    <input class="coverage__Input av__Input">
+
+                    <label class="deducible__Label">Asistencia Legal</label>
+                    <input class="coverage__Input al__Input">
+                    <input class="coverage__Input al__Input">
+                    <input class="coverage__Input al__Input">
+                    <input class="coverage__Input al__Input">
+                    <input class="coverage__Input al__Input">
+                    <input class="coverage__Input al__Input">
+
+                    <label class="deducible__Label">Accidentes al Conductor</label>
+                    <select class="coverage__Input ac__Input">
+                        <option>N/A</option>
+                        <option>$50,000</option>
+                        <option>$100,000</option>
+                        <option>$150,000</option>
+                        <option>$200,000</option>
+                    </select>
+                    <select class="coverage__Input ac__Input">
+                        <option>N/A</option>
+                        <option>$50,000</option>
+                        <option>$100,000</option>
+                        <option>$150,000</option>
+                        <option>$200,000</option>
+                    </select>
+                    <select class="coverage__Input ac__Input">
+                        <option>N/A</option>
+                        <option>$50,000</option>
+                        <option>$100,000</option>
+                        <option>$150,000</option>
+                        <option>$200,000</option>
+                    </select>
+                    <select class="coverage__Input ac__Input">
+                        <option>N/A</option>
+                        <option>$50,000</option>
+                        <option>$100,000</option>
+                        <option>$150,000</option>
+                        <option>$200,000</option>
+                    </select>
+                    <select class="coverage__Input ac__Input">
+                        <option>N/A</option>
+                        <option>$50,000</option>
+                        <option>$100,000</option>
+                        <option>$150,000</option>
+                        <option>$200,000</option>
+                    </select>
+                    <select class="coverage__Input ac__Input">
+                        <option>N/A</option>
+                        <option>$50,000</option>
+                        <option>$100,000</option>
+                        <option>$150,000</option>
+                        <option>$200,000</option>
+                    </select>
+
+                </div>   
+
+            </section>
+
+        <button id="generarPDF" class="pdf__Button">Generar PDF</button>
+
+        </main>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+        <script src="script.js"></script>
+
+    </body>
+</html>

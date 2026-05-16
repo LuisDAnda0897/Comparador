@@ -1,0 +1,325 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #f4f6f8;
+    color: #1f2933;
+
+}
+.header{
+    display: grid;
+    grid-template-columns: 320px 1fr 180px;
+    align-items: start;
+    gap: 30px;
+    padding: 20px 40px;
+    background-color: white;
+    border-bottom: 4px solid #c1945d;
+}
+
+.logo__Header{
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+}
+.agent__Data{
+    justify-self: center;
+}
+
+.agent__Selector{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.agent__Selector h2{
+    margin: 0;
+    font-size: 22px;
+}
+
+.agent__Data p{
+    margin: 12px 0;
+}
+
+.agente__List,
+input,
+select{
+    height: 34px;
+    padding: 6px 10px;
+    border: 1px solid #b8c2cc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus,
+select:focus{
+    border-color: rgb(49, 134, 245);
+    box-shadow: 0 0 0 3px rgb(49, 134, 245, 0.18);
+}
+
+.fecha{
+    justify-self: end;
+    font-weight: bold;
+}
+
+main{
+    padding: 30px 40px;
+}
+
+.client__Sec{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 24px;
+}
+
+.client__Data,
+.unit__Data{
+    background-color: white;
+    padding: 18px 22px;
+    border-radius: 8px;
+    border: 1px solid #d9e2ec;
+
+    display: grid;
+    grid-template-columns: 115px 370px 120px;
+    align-items: center;
+    gap: 10px 40px;
+}
+
+.client__Data h1,
+.unit__Data h1{
+    margin: 8px 0 0;
+    font-size: 22px;
+    color: #111827;
+}
+
+.client__Data h1,
+.unit__Data h1{
+    grid-column: 1 / -1;
+}
+
+.client__info,
+.unit__info {
+    font-weight: bold;
+    grid-column: 1;
+}
+
+.client__Input,
+.unit__Input {
+    width: 100%;
+    grid-column: 2;
+}
+
+.checkbox__Group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    min-height: 34px;
+}
+
+.checkbox__Option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.checkbox__Option input {
+    width: 15px;
+    height: 15px;
+    padding: 0;
+}
+
+.table__Title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(49, 134, 245);
+    height: 40px;
+    font-size: 20px;
+    color: aliceblue;
+    border-top: 4px solid #c1945d;
+    margin: 0;
+}
+
+.seg__Compara {
+    background-color: white;
+    padding: 35px 30px;
+    border: 1px solid #d9e2ec;
+    border-top: none;
+}
+
+.seg__Logohead {
+    display: grid;
+    grid-template-columns: 150px repeat(6, 1fr);
+    gap: 14px 18px;
+    align-items: center;
+}
+
+.seg__Logohead::before {
+    content: "";
+}
+
+.seg__LogoItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 0px;
+}
+
+.seg__LogoItem input {
+    width: 16px;
+    height: 16px;
+}
+
+.seg__LogoItem label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.seg__LogoItem img {
+    width: 50px;
+    height: auto;
+    object-fit: contain;
+
+}
+
+.logo__Item{
+    width: 120px;
+    max-height: 60PX;
+    height: auto;
+    object-fit: contain;
+}
+
+.side__Title {
+    grid-column: 3;
+    grid-row: 2;
+    align-self: center;
+}
+
+.side__Options {
+    grid-column: 3;
+    grid-row: 2 / 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.seg__LogoItem img.logo__Item {
+    width: 90px;
+    max-width: none;
+    max-height: 80px;
+    height: auto;
+    object-fit: contain;
+}
+
+.seg__LogoItem img:not(.logo__Item) {
+    width: 60px;
+    max-width: none;
+    max-height: 60px;
+    height: auto;
+    object-fit: contain;
+}
+
+.price__Table {
+    display: grid;
+    grid-template-columns: 150px repeat(6, 1fr);
+    gap: 14px 18px;
+    align-items: center;
+    margin-top: 28px;
+}
+
+.price__Logo {
+    text-align: center;
+    font-weight: bold;
+}
+
+.price__Label {
+    font-weight: bold;
+    color: #111827;
+}
+
+.price__Input {
+    width: 100%;
+    max-width: 120px;
+    justify-self: center;
+    text-align: center;
+}
+
+.payment__Options {
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.subtitle__Table{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(135, 183, 247);
+    height: 30px;
+    font-size: 16px;
+    color: rgb(58, 58, 58);
+    border-top: 4px solid #c1945d;
+    margin: 0;
+}
+
+.deducibles__Table {
+    display: grid;
+    grid-template-columns: 150px repeat(6, 1fr);
+    gap: 14px 18px;
+    align-items: start;
+    margin-top: 20px;
+}
+
+.deducible__Label {
+    font-weight: bold;
+    color: #111827;
+    align-self: center;
+}
+
+.coverage__Cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.coverage__Cell select,
+.coverage__Cell input,
+.coverage__Input {
+    width: 100%;
+    max-width: 125px;
+    height: 32px;
+    text-align: center;
+}
+
+.agent__Data{
+    justify-self: start;
+}
+
+.pdf__Button {
+    margin-top: 24px;
+    padding: 12px 22px;
+    background-color: rgb(49, 134, 245);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.pdf__Button:hover {
+    background-color: rgb(31, 105, 200);
+}
+
+.valorOculto {
+    display: none;
+}
