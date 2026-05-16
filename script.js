@@ -209,15 +209,38 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
                 const canvas = document.createElement("canvas");
                 canvas.width = img.naturalWidth;
                 canvas.height = img.naturalHeight;
-
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0);
-
-                resolve(canvas.toDataURL("image/png"));
+                canvas.getContext("2d").drawImage(img, 0, 0);
+                resolve({
+                    data: canvas.toDataURL("image/png"),
+                    width: img.naturalWidth,
+                    height: img.naturalHeight
+                });
             };
             img.onerror = () => resolve(null);
             img.src = src;
         });
+    }
+
+    function dibujarImagenAjustada(doc, imagen, x, y, maxW, maxH) {
+        if (!imagen) return;
+
+        const ratio = imagen.width / imagen.height;
+        let w = maxW;
+        let h = w / ratio;
+
+        if (h > maxH) {
+            h = maxH;
+            w = h * ratio;
+        }
+
+        doc.addImage(
+            imagen.data,
+            "PNG",
+            x + (maxW - w) / 2,
+            y + (maxH - h) / 2,
+            w,
+            h
+        );
     }
 
     const logoSwartz = await cargarImagen("logo-Photoroom.png");
@@ -226,8 +249,6 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     for (const aseguradora of seleccionadas) {
         logosAseguradoras[aseguradora.nombre] = await cargarImagen(aseguradora.logo);
     }
-
-    const nombresAseguradoras = seleccionadas.map(aseguradora => aseguradora.nombre);
 
     function valorDeLista(selector, index) {
         const elementos = Array.from(document.querySelectorAll(selector));
@@ -243,12 +264,8 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
         const rbInputs = Array.from(document.querySelectorAll(".rb__Input"));
 
         return seleccionadas.map((aseguradora) => {
-            if (aseguradora.index === 0) {
-                return document.getElementById("rbAXA").value || "-";
-            }
-
-            const input = rbInputs[aseguradora.index - 1];
-            return input ? input.value || "-" : "-";
+            if (aseguradora.index === 0) return document.getElementById("rbAXA").value || "-";
+            return rbInputs[aseguradora.index - 1]?.value || "-";
         });
     }
 
@@ -265,7 +282,6 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
                 : dmInputs[aseguradora.index - 1]?.value || "-";
 
             const partes = [suma];
-
             if (valor) partes.push(valor);
             partes.push(deducible);
 
@@ -273,29 +289,9 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
         });
     }
 
-    const azul = [49, 134, 245];
-    const azulClaro = [135, 183, 247];
-    const dorado = [193, 148, 93];
-    const grisTexto = [31, 41, 51];
-
-    if (logoSwartz) {
-        doc.addImage(logoSwartz, "PNG", 14, 8, 42, 18);
+    function convertirPrecio(numeroTexto) {
+        return Number(String(numeroTexto).replace(/[^0-9.]/g, "")) || Infinity;
     }
-
-    doc.setDrawColor(...dorado);
-    doc.setLineWidth(1.2);
-    doc.line(14, 30, 265, 30);
-
-    doc.setFontSize(16);
-    doc.setTextColor(...grisTexto);
-    doc.setFont(undefined, "bold");
-    doc.text("Comparativa de Seguro de Auto", 72, 16);
-
-    doc.setFontSize(8);
-    doc.setFont(undefined, "normal");
-    doc.text(`Cliente: ${document.getElementById("clientName").value || ""}`, 72, 23);
-    doc.text(`Vehículo: ${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`, 72, 28);
-    doc.text(`Fecha: ${fechaCoti.textContent}`, 225, 16);
 
     const costosTodos = Array.from(document.querySelectorAll(".price__Input"));
     const costos = seleccionadas.map(aseguradora => {
@@ -303,60 +299,57 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
         return input ? input.value || "-" : "-";
     });
 
+    const preciosNumericos = costos.map(convertirPrecio);
+    const precioMinimo = Math.min(...preciosNumericos);
+
     const formasPagoTodas = Array.from(document.querySelectorAll(".payment__Options"));
     const formasPago = seleccionadas.map(aseguradora => {
         const contenedor = formasPagoTodas[aseguradora.index];
         return contenedor ? contenedor.innerText.replace(/\n/g, " / ") : "-";
     });
 
-    doc.autoTable({
-        startY: 36,
-        head: [["Rubro", ...nombresAseguradoras]],
-        body: [
-            ["Costo Anual", ...costos],
-            ["Otras formas de pago", ...formasPago]
-        ],
-        theme: "grid",
-        headStyles: {
-            fillColor: azul,
-            textColor: 255,
-            lineColor: dorado,
-            lineWidth: 0.35,
-            minCellHeight: 18
-        },
-        styles: {
-            fontSize: 8,
-            halign: "center",
-            valign: "middle",
-            lineColor: dorado,
-            lineWidth: 0.25
-        },
-        columnStyles: {
-            0: { halign: "left", fontStyle: "bold", cellWidth: 42 }
-        },
-        didParseCell: function (data) {
-            if (data.section === "body" && data.row.index === 0 && data.column.index > 0) {
-                data.cell.styles.fontSize = 12;
-                data.cell.styles.fontStyle = "bold";
-                data.cell.styles.textColor = [20, 80, 150];
-                data.cell.styles.fillColor = [239, 246, 255];
-            }
-        },
-        didDrawCell: function (data) {
-            if (data.section === "head" && data.column.index > 0) {
-                const nombre = nombresAseguradoras[data.column.index - 1];
-                const logo = logosAseguradoras[nombre];
+    const azul = [49, 134, 245];
+    const azulClaro = [226, 239, 255];
+    const dorado = [193, 148, 93];
+    const grisTexto = [31, 41, 51];
+    const verdeSuave = [218, 247, 224];
 
-                if (logo) {
-                    const x = data.cell.x + data.cell.width / 2 - 8;
-                    const y = data.cell.y + 3;
-                    doc.addImage(logo, "PNG", x, y, 16, 10);
-                }
-            }
-        }
-    });
+    if (logoSwartz) {
+        dibujarImagenAjustada(doc, logoSwartz, 14, 8, 45, 20);
+    }
 
-    const bodyCoberturas = [
+    doc.setDrawColor(...dorado);
+    doc.setLineWidth(1.2);
+    doc.line(14, 31, 265, 31);
+
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(...grisTexto);
+    doc.setFontSize(16);
+    doc.text("Comparativa de Seguro de Auto", 70, 14);
+
+    doc.setFont(undefined, "normal");
+    doc.setFontSize(8);
+
+    const agenteNombre = document.getElementById("agenteSelect").selectedOptions[0]?.textContent || "";
+    const correo = document.getElementById("correoAgente").textContent || "";
+    const extension = document.getElementById("extensionAgente").textContent || "";
+
+    doc.text(`Cliente: ${document.getElementById("clientName").value || ""}`, 70, 22);
+    doc.text(`F. Nacimiento: ${document.getElementById("clientBdy").value || ""}`, 70, 27);
+    doc.text(`C.P: ${document.getElementById("clientCP").value || ""}`, 70, 32);
+
+    doc.text(`Vehículo: ${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`, 145, 22);
+    doc.text(`Agente: ${agenteNombre}`, 145, 27);
+    doc.text(correo, 145, 32);
+
+    doc.text(extension, 220, 27);
+    doc.text(`Fecha: ${fechaCoti.textContent}`, 220, 32);
+
+    const head = [["Rubro", ...seleccionadas.map(() => "")]];
+
+    const body = [
+        ["Costo Anual", ...costos],
+        ["Otras formas de pago", ...formasPago],
         ["Daños Materiales", ...obtenerDañosMateriales()],
         ["Robo Total", ...obtenerRT()],
         ["Responsabilidad Civil Daños a Terceros", ...obtenerValores(".rc__Input")],
@@ -368,18 +361,19 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     ];
 
     doc.autoTable({
-        startY: doc.lastAutoTable.finalY + 8,
-        head: [["Cobertura", ...nombresAseguradoras]],
-        body: bodyCoberturas,
+        startY: 39,
+        head,
+        body,
         theme: "grid",
         headStyles: {
-            fillColor: azulClaro,
+            fillColor: [255, 255, 255],
             textColor: grisTexto,
             lineColor: dorado,
-            lineWidth: 0.35
+            lineWidth: 0.45,
+            minCellHeight: 18
         },
         styles: {
-            fontSize: 7,
+            fontSize: 8,
             halign: "center",
             valign: "middle",
             cellPadding: 2,
@@ -390,9 +384,53 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
             fillColor: [248, 250, 252]
         },
         columnStyles: {
-            0: { halign: "left", fontStyle: "bold", cellWidth: 44 }
+            0: {
+                halign: "left",
+                fontStyle: "bold",
+                cellWidth: 45,
+                fillColor: azulClaro
+            }
+        },
+        didParseCell: function (data) {
+            if (data.section === "body" && data.row.index === 0) {
+                data.cell.styles.fontSize = data.column.index === 0 ? 10 : 13;
+                data.cell.styles.fontStyle = "bold";
+                data.cell.styles.minCellHeight = 12;
+
+                if (data.column.index > 0) {
+                    const costoIndex = data.column.index - 1;
+                    const esMasBarato = preciosNumericos[costoIndex] === precioMinimo;
+
+                    data.cell.styles.textColor = esMasBarato ? [20, 120, 55] : [20, 80, 150];
+                    data.cell.styles.fillColor = esMasBarato ? verdeSuave : [239, 246, 255];
+                }
+            }
+
+            if (data.section === "body" && data.row.index === 1) {
+                data.cell.styles.fontSize = 8;
+                data.cell.styles.fillColor = [255, 252, 245];
+            }
+        },
+        didDrawCell: function (data) {
+            if (data.section === "head" && data.column.index > 0) {
+                const aseguradora = seleccionadas[data.column.index - 1];
+                const logo = logosAseguradoras[aseguradora.nombre];
+
+                dibujarImagenAjustada(
+                    doc,
+                    logo,
+                    data.cell.x + 2,
+                    data.cell.y + 2,
+                    data.cell.width - 4,
+                    data.cell.height - 4
+                );
+            }
         }
     });
+
+    doc.setFontSize(7);
+    doc.setTextColor(90, 90, 90);
+    doc.text("Documento generado por Swartz Seguros y Contabilidad", 14, 205);
 
     doc.save("comparativa-seguros.pdf");
 });
