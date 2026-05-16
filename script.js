@@ -180,6 +180,21 @@ function llenarInputs(selector, valores, incluyeAXA = true) {
     });
 }
 
+const checksAseguradoras = [
+    "AXAlogo",
+    "GNPlogo",
+    "QualitasLogo",
+    "BanorteLogo",
+    "SPTlogo",
+    "LatinoLogo"
+];
+
+checksAseguradoras.forEach((id) => {
+    document.getElementById(id).addEventListener("change", () => {
+        llenarCoberturasAutomaticas();
+    });
+});
+
 function formatearFechaInput(id) {
     const valor = document.getElementById(id).value;
 
