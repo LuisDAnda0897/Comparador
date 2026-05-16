@@ -355,16 +355,17 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
 
     doc.setFont(undefined, "bold");
     doc.setTextColor(...grisTexto);
-    doc.setFontSize(16);
+    doc.setFontSize(18);
     doc.text("Comparativa de Seguro de Auto", 70, 13);
 
-    doc.setFontSize(8);
+    doc.setFontSize(12);
     doc.setFont(undefined, "bold");
     doc.setTextColor(...azul);
     doc.text("Cliente", 70, 22);
     doc.text("Vehículo", 135, 22);
     doc.text("Agente", 205, 22);
 
+    doc.setfontSize(10)
     doc.setFont(undefined, "normal");
     doc.setTextColor(...grisTexto);
 
@@ -489,10 +490,25 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
 
     doc.setFontSize(7);
     doc.setTextColor(90, 90, 90);
-    doc.text("Documento generado por Swartz Seguros y Contabilidad", 14, 205);
 
-    doc.save("comparativa-seguros.pdf");
-});
+    const notaVigencia = "Cotizaciones con vigencia de 15 dias naturales, excepto Qualitas con vigencia de 7 dias. Posterior a ese periodo, los costos pueden sufrir cambios sin previo aviso.";
+    const notaPartida = doc.splitTextToSize(notaVigencia, 245);
+
+    doc.text(notaPartida, 14, 199);
+    doc.text("Documento generado por Swartz Seguros y Contabilidad", 14, 207);
+
+    const nombreCliente = document.getElementById("clientName").value || "cliente";
+
+    const nombreArchivo = nombreCliente
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9ñ-]/g, "");
+    
+    doc.save(`comparativa-${nombreArchivo}.pdf`);
+    });
 
 
 permitirSoloUno(["Femenino", "Masculino"]);
