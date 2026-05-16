@@ -205,17 +205,20 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
         return new Promise((resolve) => {
             const img = new Image();
             img.crossOrigin = "anonymous";
+
             img.onload = () => {
                 const canvas = document.createElement("canvas");
                 canvas.width = img.naturalWidth;
                 canvas.height = img.naturalHeight;
                 canvas.getContext("2d").drawImage(img, 0, 0);
+
                 resolve({
                     data: canvas.toDataURL("image/png"),
                     width: img.naturalWidth,
                     height: img.naturalHeight
                 });
             };
+
             img.onerror = () => resolve(null);
             img.src = src;
         });
@@ -241,13 +244,6 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
             w,
             h
         );
-    }
-
-    const logoSwartz = await cargarImagen("logo-Photoroom.png");
-
-    const logosAseguradoras = {};
-    for (const aseguradora of seleccionadas) {
-        logosAseguradoras[aseguradora.nombre] = await cargarImagen(aseguradora.logo);
     }
 
     function valorDeLista(selector, index) {
@@ -282,7 +278,8 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
                 : dmInputs[aseguradora.index - 1]?.value || "-";
 
             const partes = [suma];
-            if (valor) partes.push(valor);
+
+            if (valor) partes.push(formatoPesos(valor));
             partes.push(deducible);
 
             return partes.join(" / ");
@@ -293,13 +290,33 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
         return Number(String(numeroTexto).replace(/[^0-9.]/g, "")) || Infinity;
     }
 
+    function formatoPesos(valor) {
+        const numero = Number(String(valor).replace(/[^0-9.]/g, ""));
+
+        if (!numero) return valor || "-";
+
+        return numero.toLocaleString("es-MX", {
+            style: "currency",
+            currency: "MXN",
+            minimumFractionDigits: 2
+        });
+    }
+
+    const logoSwartz = await cargarImagen("logo-Photoroom.png");
+
+    const logosAseguradoras = {};
+    for (const aseguradora of seleccionadas) {
+        logosAseguradoras[aseguradora.nombre] = await cargarImagen(aseguradora.logo);
+    }
+
     const costosTodos = Array.from(document.querySelectorAll(".price__Input"));
-    const costos = seleccionadas.map(aseguradora => {
+    const costosSinFormato = seleccionadas.map(aseguradora => {
         const input = costosTodos[aseguradora.index];
         return input ? input.value || "-" : "-";
     });
 
-    const preciosNumericos = costos.map(convertirPrecio);
+    const costos = costosSinFormato.map(formatoPesos);
+    const preciosNumericos = costosSinFormato.map(convertirPrecio);
     const precioMinimo = Math.min(...preciosNumericos);
 
     const formasPagoTodas = Array.from(document.querySelectorAll(".payment__Options"));
@@ -312,38 +329,46 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     const azulClaro = [226, 239, 255];
     const dorado = [193, 148, 93];
     const grisTexto = [31, 41, 51];
-    const verdeSuave = [218, 247, 224];
+    const verdeColumna = [218, 247, 224];
+    const verdeCosto = [190, 242, 203];
 
     if (logoSwartz) {
-        dibujarImagenAjustada(doc, logoSwartz, 14, 8, 45, 20);
+        dibujarImagenAjustada(doc, logoSwartz, 14, 7, 44, 18);
     }
-
-    doc.setDrawColor(...dorado);
-    doc.setLineWidth(1.2);
-    doc.line(14, 31, 265, 31);
 
     doc.setFont(undefined, "bold");
     doc.setTextColor(...grisTexto);
     doc.setFontSize(16);
-    doc.text("Comparativa de Seguro de Auto", 70, 14);
+    doc.text("Comparativa de Seguro de Auto", 70, 13);
+
+    doc.setFontSize(8);
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(...azul);
+    doc.text("Cliente", 70, 22);
+    doc.text("Vehículo", 135, 22);
+    doc.text("Agente", 205, 22);
 
     doc.setFont(undefined, "normal");
-    doc.setFontSize(8);
+    doc.setTextColor(...grisTexto);
 
     const agenteNombre = document.getElementById("agenteSelect").selectedOptions[0]?.textContent || "";
     const correo = document.getElementById("correoAgente").textContent || "";
     const extension = document.getElementById("extensionAgente").textContent || "";
 
-    doc.text(`Cliente: ${document.getElementById("clientName").value || ""}`, 70, 22);
-    doc.text(`F. Nacimiento: ${document.getElementById("clientBdy").value || ""}`, 70, 27);
-    doc.text(`C.P: ${document.getElementById("clientCP").value || ""}`, 70, 32);
+    doc.text(document.getElementById("clientName").value || "-", 70, 27);
+    doc.text(`Nac: ${document.getElementById("clientBdy").value || "-"}`, 70, 32);
+    doc.text(`C.P: ${document.getElementById("clientCP").value || "-"}`, 70, 37);
 
-    doc.text(`Vehículo: ${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`, 145, 22);
-    doc.text(`Agente: ${agenteNombre}`, 145, 27);
-    doc.text(correo, 145, 32);
+    doc.text(`${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`, 135, 27);
+    doc.text(`Fecha: ${fechaCoti.textContent}`, 135, 32);
 
-    doc.text(extension, 220, 27);
-    doc.text(`Fecha: ${fechaCoti.textContent}`, 220, 32);
+    doc.text(agenteNombre, 205, 27);
+    doc.text(correo.replace("Correo:", "Correo: "), 205, 32);
+    doc.text(extension, 205, 37);
+
+    doc.setDrawColor(...dorado);
+    doc.setLineWidth(1.2);
+    doc.line(14, 42, 265, 42);
 
     const head = [["Rubro", ...seleccionadas.map(() => "")]];
 
@@ -361,7 +386,7 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     ];
 
     doc.autoTable({
-        startY: 39,
+        startY: 47,
         head,
         body,
         theme: "grid",
@@ -392,23 +417,39 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
             }
         },
         didParseCell: function (data) {
+            if (data.section === "body" && data.column.index > 0) {
+                const costoIndex = data.column.index - 1;
+                const esColumnaMasBarata = preciosNumericos[costoIndex] === precioMinimo;
+
+                if (esColumnaMasBarata) {
+                    data.cell.styles.fillColor = verdeColumna;
+                    data.cell.styles.textColor = [20, 90, 45];
+                    data.cell.styles.fontStyle = "bold";
+                }
+            }
+
             if (data.section === "body" && data.row.index === 0) {
-                data.cell.styles.fontSize = data.column.index === 0 ? 10 : 13;
+                data.cell.styles.fontSize = data.column.index === 0 ? 10 : 14;
                 data.cell.styles.fontStyle = "bold";
-                data.cell.styles.minCellHeight = 12;
+                data.cell.styles.minCellHeight = 13;
 
                 if (data.column.index > 0) {
                     const costoIndex = data.column.index - 1;
                     const esMasBarato = preciosNumericos[costoIndex] === precioMinimo;
 
                     data.cell.styles.textColor = esMasBarato ? [20, 120, 55] : [20, 80, 150];
-                    data.cell.styles.fillColor = esMasBarato ? verdeSuave : [239, 246, 255];
+                    data.cell.styles.fillColor = esMasBarato ? verdeCosto : [239, 246, 255];
                 }
             }
 
             if (data.section === "body" && data.row.index === 1) {
                 data.cell.styles.fontSize = 8;
-                data.cell.styles.fillColor = [255, 252, 245];
+
+                if (data.column.index === 0) {
+                    data.cell.styles.fillColor = azulClaro;
+                } else if (data.cell.styles.fillColor !== verdeColumna) {
+                    data.cell.styles.fillColor = [255, 252, 245];
+                }
             }
         },
         didDrawCell: function (data) {
