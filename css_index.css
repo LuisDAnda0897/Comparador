@@ -148,6 +148,7 @@ main{
     padding: 35px 30px;
     border: 1px solid #d9e2ec;
     border-top: none;
+    overflow-x: auto;
 }
 
 .seg__Logohead {
@@ -273,7 +274,7 @@ main{
 
 .deducibles__Table {
     display: grid;
-    grid-template-columns: 150px repeat(6, 1fr);
+    grid-template-columns: 150px repeat(6, minmax(140px, 1fr));
     gap: 14px 18px;
     align-items: start;
     margin-top: 20px;
@@ -296,7 +297,7 @@ main{
 .coverage__Cell input,
 .coverage__Input {
     width: 100%;
-    max-width: 125px;
+    max-width: 150px;
     height: 32px;
     text-align: center;
 }
