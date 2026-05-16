@@ -180,6 +180,15 @@ function llenarInputs(selector, valores, incluyeAXA = true) {
     });
 }
 
+function formatearFechaInput(id) {
+    const valor = document.getElementById(id).value;
+
+    if (!valor) return "-";
+
+    const [year, month, day] = valor.split("-");
+    return `${day}/${month}/${year}`;
+}
+
 document.getElementById("generarPDF").addEventListener("click", async () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF("landscape", "mm", "letter");
@@ -364,7 +373,7 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     const extension = document.getElementById("extensionAgente").textContent || "";
 
     doc.text(document.getElementById("clientName").value || "-", 70, 27);
-    doc.text(`Nac: ${document.getElementById("clientBdy").value || "-"}`, 70, 32);
+    doc.text(`Nac: ${formatearFechaInput("clientBdy")}`, 70, 32);
     doc.text(`C.P: ${document.getElementById("clientCP").value || "-"}`, 70, 37);
 
     doc.text(`${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`, 135, 27);
