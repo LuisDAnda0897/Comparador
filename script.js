@@ -59,6 +59,7 @@ document.querySelectorAll(".coverage__Cell").forEach((cell) => {
         const texto = select.value.toLowerCase();
 
         const mostrarValor =
+            texto.includes("valor factura") ||
             texto.includes("valor convenido") ||
             texto.includes("convenido +10") ||
             texto.includes("convenido+10");
