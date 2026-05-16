@@ -266,24 +266,31 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
         });
     }
 
-    function obtenerDañosMateriales() {
+    function obtenerSumaAsegurada() {
         const sumaIds = ["smaAXA", "smaGNP", "smaQual", "smaBanorte", "smaSPT", "smaLatino"];
         const valorIds = ["valorAXA", "valorGNP", "valorQua", "valorBanorte", "valorSPT", "valorLatino"];
-        const dmInputs = Array.from(document.querySelectorAll(".dm__Input"));
 
         return seleccionadas.map((aseguradora) => {
             const suma = document.getElementById(sumaIds[aseguradora.index])?.value || "-";
             const valor = document.getElementById(valorIds[aseguradora.index])?.value || "";
-            const deducible = aseguradora.index === 0
-                ? document.getElementById("dmAXA").value || "-"
-                : dmInputs[aseguradora.index - 1]?.value || "-";
 
-            const partes = [suma];
+            if (valor) {
+                return `${suma} / ${formatoPesos(valor)}`;
+            }
 
-            if (valor) partes.push(formatoPesos(valor));
-            partes.push(deducible);
+            return suma;
+        });
+    }
 
-            return partes.join(" / ");
+    function obtenerDeducibleDañosMateriales() {
+        const dmInputs = Array.from(document.querySelectorAll(".dm__Input"));
+
+        return seleccionadas.map((aseguradora) => {
+            if (aseguradora.index === 0) {
+                return document.getElementById("dmAXA").value || "-";
+            }
+
+            return dmInputs[aseguradora.index - 1]?.value || "-";
         });
     }
 
@@ -376,7 +383,8 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     const body = [
         ["Costo Anual", ...costos],
         ["Otras formas de pago", ...formasPago],
-        ["Daños Materiales", ...obtenerDañosMateriales()],
+        ["Suma Asegurada", ...obtenerSumaAsegurada()],
+        ["Daños Materiales", ...obtenerDeducibleDañosMateriales()],
         ["Robo Total", ...obtenerRT()],
         ["Responsabilidad Civil Daños a Terceros", ...obtenerValores(".rc__Input")],
         ["Responsabilidad Civil Ocupantes", ...obtenerValores(".rco__Input")],
@@ -476,6 +484,7 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
 
     doc.save("comparativa-seguros.pdf");
 });
+
 
 permitirSoloUno(["Femenino", "Masculino"]);
 permitirSoloUno(["unitModeUber", "unitModeMulti", "unitModeNormal"]);
