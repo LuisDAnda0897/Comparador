@@ -380,7 +380,7 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     doc.text("Vehículo", 135, 22);
     doc.text("Agente", 205, 22);
 
-    doc.setfontSize(10)
+    doc.setFontSize(10)
     doc.setFont(undefined, "normal");
     doc.setTextColor(...grisTexto);
 
@@ -525,6 +525,24 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     doc.save(`comparativa-${nombreArchivo}.pdf`);
     });
 
+
+function permitirSoloUno(ids) {
+    const checks = ids.map(id => document.getElementById(id));
+
+    checks.forEach((check) => {
+        check.addEventListener("change", () => {
+            if (check.checked) {
+                checks.forEach((otroCheck) => {
+                    if (otroCheck !== check) {
+                        otroCheck.checked = false;
+                    }
+                });
+            }
+
+            llenarCoberturasAutomaticas();
+        });
+    });
+}
 
 permitirSoloUno(["Femenino", "Masculino"]);
 permitirSoloUno(["unitModeUber", "unitModeMulti", "unitModeNormal"]);
