@@ -7,13 +7,17 @@ const agentes = {
         correo: "aylin.bocanegra@swartz.mx",
         extension: "118"
     },
-    "francisco.mendoza@swrtz.mx": {
-        correo: "francisco.mendoza@swrtz.mx",
-        extension: "100"
-    },
     "luis.deanda@swartz.mx": {
         correo: "luis.deanda@swartz.mx",
         extension: "104"
+     },
+    "francisco.mendoza@swartz.mx": {
+        correo: "francisco.mendoza@swartz.mx",
+        extension: "100"
+    },
+    "karen.miranda@swartz.mx":{
+        correo: "karen.miranda@swartz.mx",
+        extension: "101"
     },
     "lupita.ortega@swartz.mx":{
         correo: "lupita.ortega@swartz.mx",
