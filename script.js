@@ -100,6 +100,8 @@ planes.forEach((plan) => {
         }
 
         llenarCoberturasAutomaticas();
+        actualizarVisibilidadPorPlan();
+
     });
 });
 
@@ -133,6 +135,8 @@ function llenarCoberturasAutomaticas() {
     const plan = obtenerPlanSeleccionado();
 
     if (!plan) return;
+
+    actualizarVisibilidadPorPlan();
 
     const datos = {
         particular: {
@@ -214,6 +218,26 @@ function formatearFechaInput(id) {
 
     const [year, month, day] = valor.split("-");
     return `${day}/${month}/${year}`;
+}
+
+function actualizarVisibilidadPorPlan() {
+    const plan = obtenerPlanSeleccionado();
+    const esParticular = plan === "particular";
+
+    const labelRCO = Array.from(document.querySelectorAll(".deducible__Label")).find((label) => {
+        const texto = label.textContent.toLowerCase();
+        return texto.includes("responsabilidad civil") && texto.includes("ocupantes");
+    });
+
+    const inputsRCO = document.querySelectorAll(".rco__Input");
+
+    if (labelRCO) {
+        labelRCO.style.display = esParticular ? "none" : "";
+    }
+
+    inputsRCO.forEach((input) => {
+        input.style.display = esParticular ? "none" : "";
+    });
 }
 
 document.getElementById("generarPDF").addEventListener("click", async () => {
@@ -417,19 +441,27 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
 
     const head = [["Rubro", ...seleccionadas.map(() => "")]];
 
-    const body = [
-        ["Costo Anual", ...costos],
-        ["Otras formas de pago", ...formasPago],
-        ["Suma Asegurada", ...obtenerSumaAsegurada()],
-        ["Daños Materiales", ...obtenerDeducibleDañosMateriales()],
-        ["Robo Total", ...obtenerRT()],
-        ["Responsabilidad Civil Daños a Terceros", ...obtenerValores(".rc__Input")],
-        ["Responsabilidad Civil Ocupantes", ...obtenerValores(".rco__Input")],
-        ["Gastos Médicos Ocupantes", ...obtenerValores(".gm__Input")],
-        ["Asistencia Vial", ...obtenerValores(".av__Input")],
-        ["Asistencia Legal", ...obtenerValores(".al__Input")],
-        ["Accidentes al Conductor", ...obtenerValores(".ac__Input")]
-    ];
+    const planSeleccionado = obtenerPlanSeleccionado();
+
+const body = [
+    ["Costo Anual", ...costos],
+    ["Otras formas de pago", ...formasPago],
+    ["Suma Asegurada", ...obtenerSumaAsegurada()],
+    ["Daños Materiales", ...obtenerDeducibleDañosMateriales()],
+    ["Robo Total", ...obtenerRT()],
+    ["Responsabilidad Civil Daños a Terceros", ...obtenerValores(".rc__Input")]
+];
+
+if (planSeleccionado !== "particular") {
+    body.push(["Responsabilidad Civil Ocupantes", ...obtenerValores(".rco__Input")]);
+}
+
+body.push(
+    ["Gastos Médicos Ocupantes", ...obtenerValores(".gm__Input")],
+    ["Asistencia Vial", ...obtenerValores(".av__Input")],
+    ["Asistencia Legal", ...obtenerValores(".al__Input")],
+    ["Accidentes al Conductor", ...obtenerValores(".ac__Input")]
+);
 
     doc.autoTable({
         startY: 47,
