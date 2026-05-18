@@ -22,6 +22,7 @@ const agentes = {
     "mexicali@swartz.mx":{
         correo: "mexicali@swartz.mx",
         extension: "112"
+    }
 };
 
 const agenteSelect = document.getElementById("agenteSelect");
