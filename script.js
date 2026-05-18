@@ -14,7 +14,14 @@ const agentes = {
     "luis.deanda@swartz.mx": {
         correo: "luis.deanda@swartz.mx",
         extension: "104"
-    }
+    },
+    "lupita.ortega@swartz.mx":{
+        correo: "lupita.ortega@swartz.mx",
+        extension: "107"
+    },
+    "mexicali@swartz.mx":{
+        correo: "mexicali@swartz.mx",
+        extension: "112"
 };
 
 const agenteSelect = document.getElementById("agenteSelect");
