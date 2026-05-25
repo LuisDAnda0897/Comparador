@@ -324,3 +324,28 @@ main{
 .valorOculto {
     display: none;
 }
+
+.unit__Data {
+    grid-template-columns: 115px minmax(260px, 370px) 190px;
+}
+
+.unit__ChoicePanel {
+    grid-column: 3;
+    grid-row: 2 / 5;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.unit__ChoiceBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.unit__ChoiceTitle {
+    margin: 0 0 2px;
+    font-weight: bold;
+}
