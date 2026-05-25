@@ -112,6 +112,13 @@ function obtenerPlanSeleccionado() {
     return "";
 }
 
+function obtenerTipoCobertura() {
+    if (document.getElementById("coberturaAmplia").checked) return "amplia";
+    if (document.getElementById("coberturaLimitada").checked) return "limitada";
+    if (document.getElementById("coberturaRC").checked) return "rc";
+    return "amplia";
+}
+
 const aseguradoras = [
     { nombre: "AXA", checkId: "AXAlogo" },
     { nombre: "GNP", checkId: "GNPlogo" },
@@ -239,6 +246,46 @@ function actualizarVisibilidadPorPlan() {
         input.style.display = esParticular ? "none" : "";
     });
 }
+
+function ocultarFilaPorTexto(textoBuscado, ocultar) {
+    const labels = Array.from(document.querySelectorAll(".deducible__Label"));
+
+    const label = labels.find((item) =>
+        item.textContent.toLowerCase().includes(textoBuscado.toLowerCase())
+    );
+
+    if (!label) return;
+
+    label.style.display = ocultar ? "none" : "";
+
+    let elemento = label.nextElementSibling;
+    let contador = 0;
+
+    while (elemento && contador < 6) {
+        elemento.style.display = ocultar ? "none" : "";
+        elemento = elemento.nextElementSibling;
+        contador++;
+    }
+}
+
+function actualizarVisibilidadCobertura() {
+    const tipo = obtenerTipoCobertura();
+
+    const ocultarDM = tipo === "limitada" || tipo === "rc";
+    const ocultarRobo = tipo === "rc";
+
+    ocultarFilaPorTexto("Daños Materiales", ocultarDM);
+    ocultarFilaPorTexto("Robo Total", ocultarRobo);
+
+    const ocultarSuma = tipo === "limitada" || tipo === "rc";
+    ocultarFilaPorTexto("Suma Asegurada", ocultarSuma);
+}
+
+["coberturaAmplia", "coberturaLimitada", "coberturaRC"].forEach((id) => {
+    document.getElementById(id).addEventListener("change", () => {
+        actualizarVisibilidadCobertura();
+    });
+});
 
 document.getElementById("generarPDF").addEventListener("click", async () => {
     const { jsPDF } = window.jspdf;
@@ -443,16 +490,32 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
 
     const planSeleccionado = obtenerPlanSeleccionado();
 
+const tipoCobertura = obtenerTipoCobertura();
+
 const body = [
     ["Costo Anual", ...costos],
-    ["Otras formas de pago", ...formasPago],
-    ["Suma Asegurada", ...obtenerSumaAsegurada()],
-    ["Daños Materiales", ...obtenerDeducibleDañosMateriales()],
-    ["Robo Total", ...obtenerRT()],
-    ["Responsabilidad Civil Daños a Terceros", ...obtenerValores(".rc__Input")]
+    ["Otras formas de pago", ...formasPago]
 ];
 
-if (planSeleccionado !== "particular") {
+if (tipoCobertura === "amplia") {
+    body.push(
+        ["Suma Asegurada", ...obtenerSumaAsegurada()],
+        ["Daños Materiales", ...obtenerDeducibleDañosMateriales()],
+        ["Robo Total", ...obtenerRT()]
+    );
+}
+
+if (tipoCobertura === "limitada") {
+    body.push(
+        ["Robo Total", ...obtenerRT()]
+    );
+}
+
+body.push(
+    ["Responsabilidad Civil Daños a Terceros", ...obtenerValores(".rc__Input")]
+);
+
+if (obtenerPlanSeleccionado() !== "particular") {
     body.push(["Responsabilidad Civil Ocupantes", ...obtenerValores(".rco__Input")]);
 }
 
@@ -590,6 +653,7 @@ function permitirSoloUno(ids) {
 
 permitirSoloUno(["Femenino", "Masculino"]);
 permitirSoloUno(["unitModeUber", "unitModeMulti", "unitModeNormal"]);
+permitirSoloUno(["coberturaAmplia", "coberturaLimitada", "coberturaRC"]);
 
 aseguradoras.forEach((aseguradora) => {
     document.getElementById(aseguradora.checkId).addEventListener("change", () => {
