@@ -79,43 +79,45 @@
                     <label class="unit__info" for="unitName">Descripción</label>
                     <input id="unitName" class="unit__Input" placeholder="NISSAN VERSA SENSE AUT">
 
-                    <label class="unit__info side__Title">Plan</label>
-                    <div class="checkbox__Group side__Options">
-
-                        <label class="checkbox__Option" for="unitModeUber">
-                            <span>Uber</span>
-                            <input type="checkbox" id="unitModeUber">
-                        </label>    
-
-                        <label class="checkbox__Option" for="unitModeMulti">
-                            <span>Multiplataforma</span>
-                            <input type="checkbox" id="unitModeMulti">
-                        </label>    
-
-                        <label class="checkbox__Option" for="unitModeNormal">
-                            <span>Particular</span>
-                            <input type="checkbox" id="unitModeNormal">
-                        </label>    
-                    </div>
-
-                    <label class="unit__info side__Title coverage__Title">Cobertura</label>
-                        <div class="checkbox__Group side__Options coverage__Options">
+                    <div class="unit__ChoicePanel">
+                        <div class="unit__ChoiceBlock">
+                            <p class="unit__ChoiceTitle">Plan</p>
+                    
+                            <label class="checkbox__Option" for="unitModeUber">
+                                <span>Uber</span>
+                                <input type="checkbox" id="unitModeUber">
+                            </label>
+                    
+                            <label class="checkbox__Option" for="unitModeMulti">
+                                <span>Multiplataforma</span>
+                                <input type="checkbox" id="unitModeMulti">
+                            </label>
+                    
+                            <label class="checkbox__Option" for="unitModeNormal">
+                                <span>Particular</span>
+                                <input type="checkbox" id="unitModeNormal">
+                            </label>
+                        </div>
+                    
+                        <div class="unit__ChoiceBlock">
+                            <p class="unit__ChoiceTitle">Cobertura</p>
+                    
                             <label class="checkbox__Option" for="coberturaAmplia">
                                 <span>Amplia</span>
-                                <input type="checkbox" id="coberturaAmplia">
+                                <input type="checkbox" id="coberturaAmplia" checked>
                             </label>
-                            
+                    
                             <label class="checkbox__Option" for="coberturaLimitada">
                                 <span>Limitada</span>
                                 <input type="checkbox" id="coberturaLimitada">
                             </label>
-                            
+                    
                             <label class="checkbox__Option" for="coberturaRC">
                                 <span>RC</span>
                                 <input type="checkbox" id="coberturaRC">
                             </label>
                         </div>
-
+                    </div>
                 </div>
             </section>
 
