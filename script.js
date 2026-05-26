@@ -276,6 +276,20 @@ function actualizarVisibilidadCobertura() {
     ocultarFilaPorTexto("Robo Total", tipo === "rc");
 }
 
+function obtenerTextoPlan() {
+    if (document.getElementById("unitModeUber").checked) return "Uber";
+    if (document.getElementById("unitModeMulti").checked) return "Multiplataforma";
+    if (document.getElementById("unitModeNormal").checked) return "Particular";
+    return "-";
+}
+
+function obtenerTextoCobertura() {
+    if (document.getElementById("coberturaAmplia").checked) return "Amplia";
+    if (document.getElementById("coberturaLimitada").checked) return "Limitada";
+    if (document.getElementById("coberturaRC").checked) return "Responsabilidad Civil";
+    return "Amplia";
+}
+
 document.getElementById("generarPDF").addEventListener("click", async () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF("landscape", "mm", "letter");
