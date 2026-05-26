@@ -287,6 +287,41 @@ function actualizarVisibilidadCobertura() {
     });
 });
 
+function ocultarFilaPorTexto(textoBuscado, ocultar) {
+    const labels = Array.from(document.querySelectorAll(".deducible__Label"));
+
+    const label = labels.find((item) =>
+        item.textContent.toLowerCase().includes(textoBuscado.toLowerCase())
+    );
+
+    if (!label) return;
+
+    label.style.display = ocultar ? "none" : "";
+
+    let elemento = label.nextElementSibling;
+    let contador = 0;
+
+    while (elemento && contador < 6) {
+        elemento.style.display = ocultar ? "none" : "";
+        elemento = elemento.nextElementSibling;
+        contador++;
+    }
+}
+
+function obtenerTipoCobertura() {
+    if (document.getElementById("coberturaAmplia").checked) return "amplia";
+    if (document.getElementById("coberturaLimitada").checked) return "limitada";
+    if (document.getElementById("coberturaRC").checked) return "rc";
+    return "amplia";
+}
+
+function actualizarVisibilidadCobertura() {
+    const tipo = obtenerTipoCobertura();
+
+    ocultarFilaPorTexto("Daños Materiales", tipo === "limitada" || tipo === "rc");
+    ocultarFilaPorTexto("Robo Total", tipo === "rc");
+}
+
 document.getElementById("generarPDF").addEventListener("click", async () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF("landscape", "mm", "letter");
@@ -507,6 +542,7 @@ if (tipoCobertura === "amplia") {
 
 if (tipoCobertura === "limitada") {
     body.push(
+        ["Suma Asegurada", ...obtenerSumaAsegurada()],
         ["Robo Total", ...obtenerRT()]
     );
 }
