@@ -205,18 +205,73 @@
 
                 <div class="deducibles__Table">
 
-                    <label class="deducible__Label">Daños Materiales</label>
+                    <label class="deducible__Label">Suma Asegurada</label>
 
-                    <div class="coverage__Cell">
-                        <select id="smaAXA">
-                            <option>Seleccione</option>
-                            <option>Valor Factura</option>
-                            <option>Valor Convenido</option>
-                            <option>Valor Comercial</option>
-                            <option>Valor Comercial 110%</option>
-                        </select>
-                        <input id="valorAXA" placeholder="Valor">
-                        <select id="dmAXA">
+                        <div class="coverage__Cell">
+                            <select id="smaAXA">
+                                <option>Seleccione</option>
+                                <option>Valor Factura</option>
+                                <option>Valor Convenido</option>
+                                <option>Valor Comercial</option>
+                                <option>Valor Comercial 110%</option>
+                            </select>
+                            <input id="valorAXA" placeholder="Valor">
+                        </div>
+                        
+                        <div class="coverage__Cell">
+                            <select id="smaGNP">
+                                <option>Seleccione</option>
+                                <option>Valor Factura</option>
+                                <option>Valor Convenido</option>
+                                <option>Valor Convenido +10%</option>
+                                <option>Valor Comercial</option>
+                            </select>
+                            <input id="valorGNP" placeholder="Valor">
+                        </div>
+                        
+                        <div class="coverage__Cell">
+                            <select id="smaQual">
+                                <option>Seleccione</option>
+                                <option>Valor Factura</option>
+                                <option>Valor Convenido</option>
+                                <option>Valor Comercial</option>
+                            </select>
+                            <input id="valorQua" placeholder="Valor">
+                        </div>
+                        
+                        <div class="coverage__Cell">
+                            <select id="smaBanorte">
+                                <option>Seleccione</option>
+                                <option>Valor Factura</option>
+                                <option>Valor Convenido</option>
+                                <option>Valor Comercial</option>
+                            </select>
+                            <input id="valorBanorte" placeholder="Valor">
+                        </div>
+                        
+                        <div class="coverage__Cell">
+                            <select id="smaSPT">
+                                <option>Seleccione</option>
+                                <option>Valor Factura</option>
+                                <option>Valor Convenido</option>
+                                <option>Valor Comercial</option>
+                            </select>
+                            <input id="valorSPT" placeholder="Valor">
+                        </div>
+                        
+                        <div class="coverage__Cell">
+                            <select id="smaLatino">
+                                <option>Seleccione</option>
+                                <option>Valor Factura</option>
+                                <option>Valor Convenido</option>
+                                <option>Valor Comercial</option>
+                            </select>
+                            <input id="valorLatino" placeholder="Valor">
+                        </div>
+                        
+                    <label class="deducible__Label">Daños Materiales</label>
+                        
+                        <select id="dmAXA" class="coverage__Input">
                             <option>Seleccione DM</option>
                             <option>3%</option>
                             <option>5%</option>
@@ -225,64 +280,13 @@
                             <option>15%</option>
                             <option>20%</option>
                         </select>
-                    </div>
-
-                    <div class="coverage__Cell">
-                        <select id="smaGNP">
-                            <option>Seleccione</option>
-                            <option>Valor Factura</option>
-                            <option>Valor Convenido</option>
-                            <option>Valor Convenido +10%</option>
-                            <option>Valor Comercial</option>
-                        </select>
-                        <input id="valorGNP" placeholder="Valor">
-                        <input class="dm__Input" placeholder="DM">
-                    </div>
-
-                    <div class="coverage__Cell">
-                        <select id="smaQual">
-                            <option>Seleccione</option>
-                            <option>Valor Factura</option>
-                            <option>Valor Convenido</option>
-                            <option>Valor Comercial</option>
-                        </select>
-                        <input id="valorQua" placeholder="Valor">
-                        <input class="dm__Input" placeholder="DM">
-                    </div>
-
-                    <div class="coverage__Cell">
-                        <select id="smaBanorte">
-                            <option>Seleccione</option>
-                            <option>Valor Factura</option>
-                            <option>Valor Convenido</option>
-                            <option>Valor Comercial</option>
-                        </select>
-                        <input id="valorBanorte" placeholder="Valor">
-                        <input class="dm__Input" placeholder="DM">
-                    </div>
-
-                    <div class="coverage__Cell">
-                        <select id="smaSPT">
-                            <option>Seleccione</option>
-                            <option>Valor Factura</option>
-                            <option>Valor Convenido</option>
-                            <option>Valor Comercial</option>
-                        </select>
-                        <input id="valorSPT" placeholder="Valor">
-                        <input class="dm__Input" placeholder="DM">
-                    </div>
-
-                    <div class="coverage__Cell">
-                        <select id="smaLatino">
-                            <option>Seleccione</option>
-                            <option>Valor Factura</option>
-                            <option>Valor Convenido</option>
-                            <option>Valor Comercial</option>
-                        </select>
-                        <input id="valorLatino" placeholder="Valor">
-                        <input class="dm__Input" placeholder="DM">
-                    </div>
-
+                        
+                        <input class="coverage__Input dm__Input" placeholder="DM">
+                        <input class="coverage__Input dm__Input" placeholder="DM">
+                        <input class="coverage__Input dm__Input" placeholder="DM">
+                        <input class="coverage__Input dm__Input" placeholder="DM">
+                        <input class="coverage__Input dm__Input" placeholder="DM">
+                    
                 <label class="deducible__Label">Robo Total</label>
 
                     <select id="rbAXA" class="coverage__Input">
