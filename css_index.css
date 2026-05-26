@@ -7,6 +7,98 @@ body{
     color: #1f2933;
 
 }
+
+@media (max-width: 1400px) {
+    main {
+        padding: 24px 24px;
+    }
+
+    .client__Sec {
+        gap: 18px;
+    }
+
+    .client__Data,
+    .unit__Data {
+        padding: 16px;
+        gap: 10px 20px;
+    }
+
+    .unit__Data {
+        grid-template-columns: 105px minmax(220px, 1fr) 135px;
+    }
+
+    .client__Data {
+        grid-template-columns: 105px minmax(220px, 1fr) 100px;
+    }
+
+    .client__Input,
+    .unit__Input {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 1180px) {
+    .client__Sec {
+        grid-template-columns: 1fr;
+    }
+
+    .client__Data,
+    .unit__Data {
+        max-width: none;
+    }
+
+    .unit__Data {
+        grid-template-columns: 115px minmax(260px, 1fr) 160px;
+    }
+
+    .client__Data {
+        grid-template-columns: 115px minmax(260px, 1fr) 120px;
+    }
+}
+
+@media (max-width: 760px) {
+    .header {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 18px;
+    }
+
+    .logo__Header {
+        max-width: 260px;
+    }
+
+    main {
+        padding: 18px;
+    }
+
+    .client__Data,
+    .unit__Data {
+        grid-template-columns: 1fr;
+    }
+
+    .client__info,
+    .unit__info,
+    .client__Input,
+    .unit__Input,
+    .side__Title,
+    .side__Options,
+    .unit__ChoicePanel,
+    .unit__CoveragePanel {
+        grid-column: 1;
+    }
+
+    .side__Title,
+    .side__Options,
+    .unit__ChoicePanel {
+        grid-row: auto;
+    }
+
+    .unit__CoveragePanel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
 .header{
     display: grid;
     grid-template-columns: 320px 1fr 180px;
