@@ -451,25 +451,30 @@ document.getElementById("generarPDF").addEventListener("click", async () => {
     doc.text("Cliente", 70, 22);
     doc.text("Vehículo", 135, 22);
     doc.text("Agente", 205, 22);
-
-    doc.setFontSize(10)
+    
+    doc.setFontSize(10);
     doc.setFont(undefined, "normal");
     doc.setTextColor(...grisTexto);
-
+    
     const agenteNombre = document.getElementById("agenteSelect").selectedOptions[0]?.textContent || "";
     const correo = document.getElementById("correoAgente").textContent || "";
     const extension = document.getElementById("extensionAgente").textContent || "";
-
+    
     doc.text(document.getElementById("clientName").value || "-", 70, 27);
     doc.text(`Nac: ${formatearFechaInput("clientBdy")}`, 70, 32);
     doc.text(`C.P: ${document.getElementById("clientCP").value || "-"}`, 70, 37);
-
+    
     doc.text(`${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`, 135, 27);
-    doc.text(`Fecha: ${fechaCoti.textContent}`, 135, 32);
-
+    doc.text(`Plan: ${obtenerTextoPlan()}`, 135, 32);
+    doc.text(`Cobertura: ${obtenerTextoCobertura()}`, 135, 37);
+    
     doc.text(agenteNombre, 205, 27);
     doc.text(correo.replace("Correo:", "Correo: "), 205, 32);
     doc.text(extension, 205, 37);
+    
+    doc.setFont(undefined, "bold");
+    doc.setFontSize(9);
+    doc.text(`Fecha: ${fechaCoti.textContent}`, 230, 13);
 
     doc.setDrawColor(...dorado);
     doc.setLineWidth(1.2);
