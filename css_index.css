@@ -326,16 +326,13 @@ main{
 }
 
 .unit__Data {
-    grid-template-columns: 115px minmax(260px, 370px) 320px;
+    grid-template-columns: 115px minmax(260px, 370px) 150px;
 }
 
 .unit__ChoicePanel {
     grid-column: 3;
-    grid-row: 2 / 5;
+    grid-row: 2 / 4;
     align-self: start;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
 }
 
 .unit__ChoiceBlock {
@@ -350,40 +347,20 @@ main{
     font-weight: bold;
 }
 
-.unit__ChoiceTitle {
-    margin: 0 0 2px;
-    font-weight: bold;
-}
-
-.unit__Data {
-    grid-template-columns: 115px minmax(240px, 340px) minmax(360px, 1fr);
-}
-
-.unit__ChoicePanel {
-    grid-column: 3;
-    grid-row: 2 / 5;
-    align-self: start;
-
+.unit__CoveragePanel {
+    grid-column: 1 / -1;
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 36px;
-    width: 100%;
+    align-items: center;
+    gap: 14px;
+    margin-top: 8px;
+    flex-wrap: wrap;
 }
 
-.unit__ChoiceBlock {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    min-width: 140px;
+.unit__CoveragePanel .unit__ChoiceTitle {
+    margin-right: 8px;
 }
 
-.unit__ChoiceTitle {
-    margin: 0 0 2px;
-    font-weight: bold;
-}
-
-.unit__ChoiceBlock .checkbox__Option {
+.unit__ChoiceBlock .checkbox__Option,
+.unit__CoveragePanel .checkbox__Option {
     white-space: nowrap;
 }
