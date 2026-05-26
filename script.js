@@ -112,13 +112,6 @@ function obtenerPlanSeleccionado() {
     return "";
 }
 
-function obtenerTipoCobertura() {
-    if (document.getElementById("coberturaAmplia").checked) return "amplia";
-    if (document.getElementById("coberturaLimitada").checked) return "limitada";
-    if (document.getElementById("coberturaRC").checked) return "rc";
-    return "amplia";
-}
-
 const aseguradoras = [
     { nombre: "AXA", checkId: "AXAlogo" },
     { nombre: "GNP", checkId: "GNPlogo" },
@@ -268,46 +261,6 @@ function ocultarFilaPorTexto(textoBuscado, ocultar) {
     }
 }
 
-function actualizarVisibilidadCobertura() {
-    const tipo = obtenerTipoCobertura();
-
-    const ocultarDM = tipo === "limitada" || tipo === "rc";
-    const ocultarRobo = tipo === "rc";
-
-    ocultarFilaPorTexto("Daños Materiales", ocultarDM);
-    ocultarFilaPorTexto("Robo Total", ocultarRobo);
-
-    const ocultarSuma = tipo === "limitada" || tipo === "rc";
-    ocultarFilaPorTexto("Suma Asegurada", ocultarSuma);
-}
-
-["coberturaAmplia", "coberturaLimitada", "coberturaRC"].forEach((id) => {
-    document.getElementById(id).addEventListener("change", () => {
-        actualizarVisibilidadCobertura();
-    });
-});
-
-function ocultarFilaPorTexto(textoBuscado, ocultar) {
-    const labels = Array.from(document.querySelectorAll(".deducible__Label"));
-
-    const label = labels.find((item) =>
-        item.textContent.toLowerCase().includes(textoBuscado.toLowerCase())
-    );
-
-    if (!label) return;
-
-    label.style.display = ocultar ? "none" : "";
-
-    let elemento = label.nextElementSibling;
-    let contador = 0;
-
-    while (elemento && contador < 6) {
-        elemento.style.display = ocultar ? "none" : "";
-        elemento = elemento.nextElementSibling;
-        contador++;
-    }
-}
-
 function obtenerTipoCobertura() {
     if (document.getElementById("coberturaAmplia").checked) return "amplia";
     if (document.getElementById("coberturaLimitada").checked) return "limitada";
@@ -318,6 +271,7 @@ function obtenerTipoCobertura() {
 function actualizarVisibilidadCobertura() {
     const tipo = obtenerTipoCobertura();
 
+    ocultarFilaPorTexto("Suma Asegurada", tipo === "rc");
     ocultarFilaPorTexto("Daños Materiales", tipo === "limitada" || tipo === "rc");
     ocultarFilaPorTexto("Robo Total", tipo === "rc");
 }
@@ -683,6 +637,8 @@ function permitirSoloUno(ids) {
             }
 
             llenarCoberturasAutomaticas();
+            actualizarVisibilidadPorPlan();
+            actualizarVisibilidadCobertura();
         });
     });
 }
