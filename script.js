@@ -376,15 +376,37 @@ async function generarPDF() {
     agregarFilaPares(body, "Accidentes al Conductor", seleccionadas, ".ac__Input", ".acDed__Input");
     body.push(["No. Cotización", ...seleccionadas.map(a => ({ content: valorDeLista(".quote__Input", a.index), colSpan: 2 }))]);
 
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const tableMargin = 10;
+    const tableWidth = pageWidth - (tableMargin * 2);
+    const rubroWidth = 34;
+    const availableWidth = tableWidth - rubroWidth;
+    const pairWidth = availableWidth / seleccionadas.length;
+    const sumaWidth = pairWidth * 0.58;
+    const deducibleWidth = pairWidth * 0.42;
+
+    const columnStyles = {
+        0: { halign: "left", fontStyle: "bold", cellWidth: rubroWidth, fillColor: azulClaro }
+    };
+
+    for (let index = 1; index <= seleccionadas.length * 2; index++) {
+        const esSuma = index % 2 === 1;
+        columnStyles[index] = {
+            cellWidth: esSuma ? sumaWidth : deducibleWidth
+        };
+    }
+
     doc.autoTable({
         startY: 47,
         head: [headTop, headSub],
         body,
         theme: "grid",
-        headStyles: { fillColor: [255, 255, 255], textColor: grisTexto, lineColor: dorado, lineWidth: 0.35, minCellHeight: 10 },
-        styles: { fontSize: 5.7, halign: "center", valign: "middle", cellPadding: 0.8, lineColor: dorado, lineWidth: 0.18, overflow: "linebreak" },
+        tableWidth,
+        margin: { left: tableMargin, right: tableMargin },
+        headStyles: { fillColor: [255, 255, 255], textColor: grisTexto, lineColor: dorado, lineWidth: 0.35, minCellHeight: 12 },
+        styles: { fontSize: 6.8, halign: "center", valign: "middle", cellPadding: 1.45, lineColor: dorado, lineWidth: 0.18, overflow: "linebreak", minCellHeight: 8.5 },
         alternateRowStyles: { fillColor: [248, 250, 252] },
-        columnStyles: { 0: { halign: "left", fontStyle: "bold", cellWidth: 33, fillColor: azulClaro } },
+        columnStyles,
         didParseCell: function (data) {
             if (data.section === "body" && data.column.index > 0) {
                 const costoIndex = Math.floor((data.column.index - 1) / 2);
@@ -395,7 +417,7 @@ async function generarPDF() {
                 }
             }
             if (data.section === "body" && data.row.index === 0) {
-                data.cell.styles.fontSize = data.column.index === 0 ? 8 : 10;
+                data.cell.styles.fontSize = data.column.index === 0 ? 9 : 12;
                 data.cell.styles.fontStyle = "bold";
                 if (data.column.index > 0) {
                     const costoIndex = Math.floor((data.column.index - 1) / 2);
