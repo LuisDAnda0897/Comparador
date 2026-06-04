@@ -71,7 +71,7 @@
 
                 <div class="unit__Data">
 
-                    <h1>Vehiculo</h1>
+                    <h1>Vehículo</h1>
 
                     <label class="unit__info" for="unitYear">Modelo</label>
                     <input id="unitYear" class="unit__Input" placeholder="2025">
@@ -203,93 +203,97 @@
 
                 <h5 class="subtitle__Table">Sumas Aseguradas y deducibles</h5>
 
-                <div class="deducibles__Table">
+                <div class="deducibles__Table coverageMatrix">
 
-                    <label class="deducible__Label">Suma Asegurada</label>
+                    <div class="coverage__Corner"></div>
+                    <div class="coverage__SubHead">Suma asegurada</div>
+                    <div class="coverage__SubHead">Deducible</div>
+                    <div class="coverage__SubHead">Suma asegurada</div>
+                    <div class="coverage__SubHead">Deducible</div>
+                    <div class="coverage__SubHead">Suma asegurada</div>
+                    <div class="coverage__SubHead">Deducible</div>
+                    <div class="coverage__SubHead">Suma asegurada</div>
+                    <div class="coverage__SubHead">Deducible</div>
+                    <div class="coverage__SubHead">Suma asegurada</div>
+                    <div class="coverage__SubHead">Deducible</div>
+                    <div class="coverage__SubHead">Suma asegurada</div>
+                    <div class="coverage__SubHead">Deducible</div>
 
-                        <div class="coverage__Cell">
-                            <select id="smaAXA">
-                                <option>Seleccione</option>
-                                <option>Valor Factura</option>
-                                <option>Valor Convenido</option>
-                                <option>Valor Comercial</option>
-                                <option>Valor Comercial 110%</option>
-                            </select>
-                            <input id="valorAXA" placeholder="Valor">
-                        </div>
-                        
-                        <div class="coverage__Cell">
-                            <select id="smaGNP">
-                                <option>Seleccione</option>
-                                <option>Valor Factura</option>
-                                <option>Valor Convenido</option>
-                                <option>Valor Convenido +10%</option>
-                                <option>Valor Comercial</option>
-                            </select>
-                            <input id="valorGNP" placeholder="Valor">
-                        </div>
-                        
-                        <div class="coverage__Cell">
-                            <select id="smaQual">
-                                <option>Seleccione</option>
-                                <option>Valor Factura</option>
-                                <option>Valor Convenido</option>
-                                <option>Valor Comercial</option>
-                            </select>
-                            <input id="valorQua" placeholder="Valor">
-                        </div>
-                        
-                        <div class="coverage__Cell">
-                            <select id="smaBanorte">
-                                <option>Seleccione</option>
-                                <option>Valor Factura</option>
-                                <option>Valor Convenido</option>
-                                <option>Valor Comercial</option>
-                            </select>
-                            <input id="valorBanorte" placeholder="Valor">
-                        </div>
-                        
-                        <div class="coverage__Cell">
-                            <select id="smaSPT">
-                                <option>Seleccione</option>
-                                <option>Valor Factura</option>
-                                <option>Valor Convenido</option>
-                                <option>Valor Comercial</option>
-                            </select>
-                            <input id="valorSPT" placeholder="Valor">
-                        </div>
-                        
-                        <div class="coverage__Cell">
-                            <select id="smaLatino">
-                                <option>Seleccione</option>
-                                <option>Valor Factura</option>
-                                <option>Valor Convenido</option>
-                                <option>Valor Comercial</option>
-                            </select>
-                            <input id="valorLatino" placeholder="Valor">
-                        </div>
-                        
-                    <label class="deducible__Label">Daños Materiales</label>
-                        
-                        <select id="dmAXA" class="coverage__Input">
-                            <option>Seleccione DM</option>
-                            <option>3%</option>
-                            <option>5%</option>
-                            <option>7%</option>
-                            <option>10%</option>
-                            <option>15%</option>
-                            <option>20%</option>
+                    <label class="deducible__Label rowDm">Daños Materiales</label>
+                    <div class="coverage__Cell rowDm">
+                        <select id="smaAXA" class="sumaSelect" data-index="0">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                            <option>Valor Comercial 110%</option>
                         </select>
-                        
-                        <input class="coverage__Input dm__Input" placeholder="DM">
-                        <input class="coverage__Input dm__Input" placeholder="DM">
-                        <input class="coverage__Input dm__Input" placeholder="DM">
-                        <input class="coverage__Input dm__Input" placeholder="DM">
-                        <input class="coverage__Input dm__Input" placeholder="DM">
-                    
-                <label class="deducible__Label">Robo Total</label>
+                        <input id="valorAXA" class="valorInput" data-index="0" placeholder="Valor">
+                    </div>
+                    <select id="dmAXA" class="coverage__Input rowDm">
+                        <option>Seleccione DM</option>
+                        <option>3%</option>
+                        <option>5%</option>
+                        <option>7%</option>
+                        <option>10%</option>
+                        <option>15%</option>
+                        <option>20%</option>
+                    </select>
+                    <div class="coverage__Cell rowDm">
+                        <select id="smaGNP" class="sumaSelect" data-index="1">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Convenido +10%</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorGNP" class="valorInput" data-index="1" placeholder="Valor">
+                    </div>
+                    <input class="coverage__Input dm__Input rowDm" placeholder="Deducible DM" readonly>
+                    <div class="coverage__Cell rowDm">
+                        <select id="smaQual" class="sumaSelect" data-index="2">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorQua" class="valorInput" data-index="2" placeholder="Valor">
+                    </div>
+                    <input class="coverage__Input dm__Input rowDm" placeholder="Deducible DM" readonly>
+                    <div class="coverage__Cell rowDm">
+                        <select id="smaBanorte" class="sumaSelect" data-index="3">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorBanorte" class="valorInput" data-index="3" placeholder="Valor">
+                    </div>
+                    <input class="coverage__Input dm__Input rowDm" placeholder="Deducible DM" readonly>
+                    <div class="coverage__Cell rowDm">
+                        <select id="smaSPT" class="sumaSelect" data-index="4">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorSPT" class="valorInput" data-index="4" placeholder="Valor">
+                    </div>
+                    <input class="coverage__Input dm__Input rowDm" placeholder="Deducible DM" readonly>
+                    <div class="coverage__Cell rowDm">
+                        <select id="smaLatino" class="sumaSelect" data-index="5">
+                            <option>Seleccione</option>
+                            <option>Valor Factura</option>
+                            <option>Valor Convenido</option>
+                            <option>Valor Comercial</option>
+                        </select>
+                        <input id="valorLatino" class="valorInput" data-index="5" placeholder="Valor">
+                    </div>
+                    <input class="coverage__Input dm__Input rowDm" placeholder="Deducible DM" readonly>
 
-                    <select id="rbAXA" class="coverage__Input">
+                    <label class="deducible__Label rowRobo">Robo Total</label>
+                    <input class="coverage__Input sumaRt__Input rowRobo" readonly placeholder="Suma Robo">
+                    <select id="rbAXA" class="coverage__Input rowRobo">
                         <option>Seleccione RT</option>
                         <option>5%</option>
                         <option>7%</option>
@@ -297,51 +301,86 @@
                         <option>15%</option>
                         <option>20%</option>
                     </select>
-                    <input class="coverage__Input rb__Input" placeholder="RT">
-                    <input class="coverage__Input rb__Input" placeholder="RT">
-                    <input class="coverage__Input rb__Input" placeholder="RT">
-                    <input class="coverage__Input rb__Input" placeholder="RT">
-                    <input class="coverage__Input rb__Input" placeholder="RT">
+                    <input class="coverage__Input sumaRt__Input rowRobo" readonly placeholder="Suma Robo">
+                    <input class="coverage__Input rb__Input rowRobo" placeholder="Deducible RT" readonly>
+                    <input class="coverage__Input sumaRt__Input rowRobo" readonly placeholder="Suma Robo">
+                    <input class="coverage__Input rb__Input rowRobo" placeholder="Deducible RT" readonly>
+                    <input class="coverage__Input sumaRt__Input rowRobo" readonly placeholder="Suma Robo">
+                    <input class="coverage__Input rb__Input rowRobo" placeholder="Deducible RT" readonly>
+                    <input class="coverage__Input sumaRt__Input rowRobo" readonly placeholder="Suma Robo">
+                    <input class="coverage__Input rb__Input rowRobo" placeholder="Deducible RT" readonly>
+                    <input class="coverage__Input sumaRt__Input rowRobo" readonly placeholder="Suma Robo">
+                    <input class="coverage__Input rb__Input rowRobo" placeholder="Deducible RT" readonly>
 
                     <label class="deducible__Label">Responsabilidad Civil<br>Daños a Terceros</label>
                     <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rcd__Input" readonly>
                     <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rcd__Input" readonly>
                     <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rcd__Input" readonly>
                     <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rcd__Input" readonly>
                     <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rcd__Input" readonly>
                     <input class="coverage__Input rc__Input">
+                    <input class="coverage__Input rcd__Input" readonly>
 
-                    <label class="deducible__Label">Responsabilidad Civil<br>Ocupantes</label>
-                    <input class="coverage__Input rco__Input">
-                    <input class="coverage__Input rco__Input">
-                    <input class="coverage__Input rco__Input">
-                    <input class="coverage__Input rco__Input">
-                    <input class="coverage__Input rco__Input">
-                    <input class="coverage__Input rco__Input">
+                    <label class="deducible__Label rowRco">Responsabilidad Civil<br>Ocupantes</label>
+                    <input class="coverage__Input rco__Input rowRco">
+                    <input class="coverage__Input rcoDed__Input rowRco" readonly>
+                    <input class="coverage__Input rco__Input rowRco">
+                    <input class="coverage__Input rcoDed__Input rowRco" readonly>
+                    <input class="coverage__Input rco__Input rowRco">
+                    <input class="coverage__Input rcoDed__Input rowRco" readonly>
+                    <input class="coverage__Input rco__Input rowRco">
+                    <input class="coverage__Input rcoDed__Input rowRco" readonly>
+                    <input class="coverage__Input rco__Input rowRco">
+                    <input class="coverage__Input rcoDed__Input rowRco" readonly>
+                    <input class="coverage__Input rco__Input rowRco">
+                    <input class="coverage__Input rcoDed__Input rowRco" readonly>
 
                     <label class="deducible__Label">Gastos Médicos<br>Ocupantes</label>
                     <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gmDed__Input" readonly>
                     <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gmDed__Input" readonly>
                     <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gmDed__Input" readonly>
                     <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gmDed__Input" readonly>
                     <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gmDed__Input" readonly>
                     <input class="coverage__Input gm__Input">
+                    <input class="coverage__Input gmDed__Input" readonly>
 
                     <label class="deducible__Label">Asistencia Vial</label>
                     <input class="coverage__Input av__Input">
+                    <input class="coverage__Input avDed__Input" readonly>
                     <input class="coverage__Input av__Input">
+                    <input class="coverage__Input avDed__Input" readonly>
                     <input class="coverage__Input av__Input">
+                    <input class="coverage__Input avDed__Input" readonly>
                     <input class="coverage__Input av__Input">
+                    <input class="coverage__Input avDed__Input" readonly>
                     <input class="coverage__Input av__Input">
+                    <input class="coverage__Input avDed__Input" readonly>
                     <input class="coverage__Input av__Input">
+                    <input class="coverage__Input avDed__Input" readonly>
 
                     <label class="deducible__Label">Asistencia Legal</label>
                     <input class="coverage__Input al__Input">
+                    <input class="coverage__Input alDed__Input" readonly>
                     <input class="coverage__Input al__Input">
+                    <input class="coverage__Input alDed__Input" readonly>
                     <input class="coverage__Input al__Input">
+                    <input class="coverage__Input alDed__Input" readonly>
                     <input class="coverage__Input al__Input">
+                    <input class="coverage__Input alDed__Input" readonly>
                     <input class="coverage__Input al__Input">
+                    <input class="coverage__Input alDed__Input" readonly>
                     <input class="coverage__Input al__Input">
+                    <input class="coverage__Input alDed__Input" readonly>
 
                     <label class="deducible__Label">Accidentes al Conductor</label>
                     <select class="coverage__Input ac__Input">
@@ -351,6 +390,7 @@
                         <option>$150,000</option>
                         <option>$200,000</option>
                     </select>
+                    <input class="coverage__Input acDed__Input" readonly>
                     <select class="coverage__Input ac__Input">
                         <option>N/A</option>
                         <option>$50,000</option>
@@ -358,6 +398,7 @@
                         <option>$150,000</option>
                         <option>$200,000</option>
                     </select>
+                    <input class="coverage__Input acDed__Input" readonly>
                     <select class="coverage__Input ac__Input">
                         <option>N/A</option>
                         <option>$50,000</option>
@@ -365,6 +406,7 @@
                         <option>$150,000</option>
                         <option>$200,000</option>
                     </select>
+                    <input class="coverage__Input acDed__Input" readonly>
                     <select class="coverage__Input ac__Input">
                         <option>N/A</option>
                         <option>$50,000</option>
@@ -372,6 +414,7 @@
                         <option>$150,000</option>
                         <option>$200,000</option>
                     </select>
+                    <input class="coverage__Input acDed__Input" readonly>
                     <select class="coverage__Input ac__Input">
                         <option>N/A</option>
                         <option>$50,000</option>
@@ -379,6 +422,7 @@
                         <option>$150,000</option>
                         <option>$200,000</option>
                     </select>
+                    <input class="coverage__Input acDed__Input" readonly>
                     <select class="coverage__Input ac__Input">
                         <option>N/A</option>
                         <option>$50,000</option>
@@ -386,12 +430,24 @@
                         <option>$150,000</option>
                         <option>$200,000</option>
                     </select>
+                    <input class="coverage__Input acDed__Input" readonly>
 
-                </div>   
+                    <label class="deducible__Label">No. Cotización</label>
+                    <input class="coverage__Input quote__Input quote__Pair " placeholder="Folio">
+                    <input class="coverage__Input quote__Input quote__Pair " placeholder="Folio">
+                    <input class="coverage__Input quote__Input quote__Pair " placeholder="Folio">
+                    <input class="coverage__Input quote__Input quote__Pair " placeholder="Folio">
+                    <input class="coverage__Input quote__Input quote__Pair " placeholder="Folio">
+                    <input class="coverage__Input quote__Input quote__Pair " placeholder="Folio">
+
+                </div>
 
             </section>
 
-        <button id="generarPDF" class="pdf__Button">Generar PDF</button>
+        <div class="action__Buttons">
+            <button id="generarPDF" class="pdf__Button">Generar PDF</button>
+            <button id="limpiarFormulario" class="clear__Button" type="button">Limpiar todo</button>
+        </div>
 
         </main>
 

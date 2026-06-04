@@ -1,32 +1,11 @@
 const agentes = {
-    "miguel.ayala@swartz.mx": {
-        correo: "miguel.ayala@swartz.mx",
-        extension: "125"
-    },
-    "aylin.bocanegra@swartz.mx": {
-        correo: "aylin.bocanegra@swartz.mx",
-        extension: "118"
-    },
-    "luis.deanda@swartz.mx": {
-        correo: "luis.deanda@swartz.mx",
-        extension: "104"
-     },
-    "francisco.mendoza@swartz.mx": {
-        correo: "francisco.mendoza@swartz.mx",
-        extension: "100"
-    },
-    "karen.miranda@swartz.mx":{
-        correo: "karen.miranda@swartz.mx",
-        extension: "101"
-    },
-    "lupita.ortega@swartz.mx":{
-        correo: "lupita.ortega@swartz.mx",
-        extension: "107"
-    },
-    "mexicali@swartz.mx":{
-        correo: "mexicali@swartz.mx",
-        extension: "112"
-    }
+    "miguel.ayala@swartz.mx": { correo: "miguel.ayala@swartz.mx", extension: "125" },
+    "aylin.bocanegra@swartz.mx": { correo: "aylin.bocanegra@swartz.mx", extension: "118" },
+    "luis.deanda@swartz.mx": { correo: "luis.deanda@swartz.mx", extension: "104" },
+    "francisco.mendoza@swartz.mx": { correo: "francisco.mendoza@swartz.mx", extension: "100" },
+    "karen.miranda@swartz.mx": { correo: "karen.miranda@swartz.mx", extension: "101" },
+    "lupita.ortega@swartz.mx": { correo: "lupita.ortega@swartz.mx", extension: "107" },
+    "mexicali@swartz.mx": { correo: "mexicali@swartz.mx", extension: "112" }
 };
 
 const agenteSelect = document.getElementById("agenteSelect");
@@ -34,246 +13,80 @@ const correoAgente = document.getElementById("correoAgente");
 const extensionAgente = document.getElementById("extensionAgente");
 const fechaCoti = document.getElementById("fechaCoti");
 
-agenteSelect.addEventListener("change", () => {
-    const agente = agentes[agenteSelect.value];
-
-    if (!agente) {
-        correoAgente.textContent = "Correo:";
-        extensionAgente.textContent = "Tel: 33 2878 5446 Ext:";
-        return;
-    }
-
-    correoAgente.textContent = `Correo: ${agente.correo}`;
-    extensionAgente.textContent = `Tel: 33 2878 5446 Ext: ${agente.extension}`;
-});
-
-function actualizarFecha() {
-    const hoy = new Date();
-
-    fechaCoti.textContent = hoy.toLocaleDateString("es-MX", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric"
-    });
-}
-
-actualizarFecha();
-
-document.querySelectorAll(".coverage__Cell").forEach((cell) => {
-    const select = cell.querySelector("select");
-    const valorInput = cell.querySelector("input");
-
-    if (!select || !valorInput) return;
-
-    valorInput.classList.add("valorOculto");
-
-    select.addEventListener("change", () => {
-        const texto = select.value.toLowerCase();
-
-        const mostrarValor =
-            texto.includes("valor factura") ||
-            texto.includes("valor convenido") ||
-            texto.includes("convenido +10") ||
-            texto.includes("convenido+10");
-
-        if (mostrarValor) {
-            valorInput.classList.remove("valorOculto");
-        } else {
-            valorInput.classList.add("valorOculto");
-            valorInput.value = "";
-        }
-    });
-});
-
-const planes = [
-    document.getElementById("unitModeUber"),
-    document.getElementById("unitModeMulti"),
-    document.getElementById("unitModeNormal")
+const aseguradoras = [
+    { nombre: "AXA", checkId: "AXAlogo", logo: "LOGO/AXA_Logo.svg.png" },
+    { nombre: "GNP", checkId: "GNPlogo", logo: "LOGO/gnp-seguros.png" },
+    { nombre: "Qualitas", checkId: "QualitasLogo", logo: "LOGO/qualitas_logo.png" },
+    { nombre: "Banorte", checkId: "BanorteLogo", logo: "LOGO/banorte.png" },
+    { nombre: "SPT", checkId: "SPTlogo", logo: "LOGO/images.png" },
+    { nombre: "Latino", checkId: "LatinoLogo", logo: "LOGO/latino seguros.png" }
 ];
 
-planes.forEach((plan) => {
-    plan.addEventListener("change", () => {
-        if (plan.checked) {
-            planes.forEach((otroPlan) => {
-                if (otroPlan !== plan) otroPlan.checked = false;
-            });
-        }
+const sumaIds = ["smaAXA", "smaGNP", "smaQual", "smaBanorte", "smaSPT", "smaLatino"];
+const valorIds = ["valorAXA", "valorGNP", "valorQua", "valorBanorte", "valorSPT", "valorLatino"];
 
-        llenarCoberturasAutomaticas();
-        actualizarVisibilidadPorPlan();
+const datosPorPlan = {
+    particular: {
+        dm: ["5%", "5%", "5%", "5%", "5%"],
+        rb: ["10%", "10%", "10%", "10%", "10%"],
+        rc: ["$4,000,000", "$3,000,000", "$3,000,000", "$4,000,000", "$3,000,000", "$3,000,000"],
+        rcd: ["Sin deducible", "Sin deducible", "Sin deducible", "Sin deducible", "Sin deducible", "Sin deducible"],
+        rco: ["Incluido", "Incluido", "Incluido", "Incluido", "Incluido", "Incluido"],
+        gm: ["$200,000", "$200,000", "$200,000", "$200,000", "$200,000", "$200,000"],
+        av: ["5 Eventos", "5 Eventos", "5 Eventos", "5 Eventos", "1 Evento", "5 Eventos"],
+        al: ["Incluida", "Incluida", "Incluida", "Incluida", "Incluida", "Incluida"],
+        ac: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    },
+    uber: {
+        dm: ["10%", "10%", "10%", "10%", "10%"],
+        rb: ["20%", "20%", "20%", "20%", "20%"],
+        rc: ["$4,000,000", "$3,000,000", "$3,000,000", "$4,000,000", "$3,000,000", "$3,000,000"],
+        rcd: ["N/A", "50 UMAs", "50 UMAs", "50 UMAs", "N/A", "20 UMAs"],
+        rco: ["$1,500,000", "$3,000,000", "5,000 UMAs", "5,000 UMAs", "5,000 UMAs", "5,000 UMAs"],
+        gm: ["$200,000", "$200,000", "$200,000", "$200,000", "$200,000", "$200,000"],
+        av: ["5 Eventos", "5 Eventos", "2 Eventos", "2 Eventos", "1 Evento", "2 Eventos"],
+        al: ["Incluida", "Incluida", "Incluida", "Incluida", "Incluida", "Incluida"],
+        ac: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    },
+    multiplataforma: {
+        dm: ["10%", "10%", "10%", "10%", "10%"],
+        rb: ["20%", "20%", "20%", "20%", "20%"],
+        rc: ["$4,000,000", "$3,000,000", "$3,000,000", "$4,000,000", "$3,000,000", "$3,000,000"],
+        rcd: ["50 UMAs", "50 UMAs", "50 UMAs", "50 UMAs", "N/A", "20 UMAs"],
+        rco: ["5,000 UMAs", "$3,000,000", "5,000 UMAs", "5,000 UMAs", "5,000 UMAs", "5,000 UMAs"],
+        gm: ["$200,000", "$200,000", "$200,000", "$200,000", "$200,000", "$200,000"],
+        av: ["2 Eventos", "5 Eventos", "2 Eventos", "2 Eventos", "1 Evento", "2 Eventos"],
+        al: ["Incluida", "Incluida", "Incluida", "Incluida", "Incluida", "Incluida"],
+        ac: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    }
+};
 
-    });
-});
+function formatoPesos(valor) {
+    const numero = Number(String(valor).replace(/[^0-9.]/g, ""));
+    if (!numero) return valor || "-";
+    return numero.toLocaleString("es-MX", { style: "currency", currency: "MXN", minimumFractionDigits: 2 });
+}
+
+function convertirPrecio(numeroTexto) {
+    return Number(String(numeroTexto).replace(/[^0-9.]/g, "")) || Infinity;
+}
+
+function actualizarFecha() {
+    fechaCoti.textContent = new Date().toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function formatearFechaInput(id) {
+    const valor = document.getElementById(id).value;
+    if (!valor) return "-";
+    const [year, month, day] = valor.split("-");
+    return `${day}/${month}/${year}`;
+}
 
 function obtenerPlanSeleccionado() {
     if (document.getElementById("unitModeUber").checked) return "uber";
     if (document.getElementById("unitModeMulti").checked) return "multiplataforma";
     if (document.getElementById("unitModeNormal").checked) return "particular";
     return "";
-}
-
-const aseguradoras = [
-    { nombre: "AXA", checkId: "AXAlogo" },
-    { nombre: "GNP", checkId: "GNPlogo" },
-    { nombre: "Qualitas", checkId: "QualitasLogo" },
-    { nombre: "Banorte", checkId: "BanorteLogo" },
-    { nombre: "SPT", checkId: "SPTlogo" },
-    { nombre: "Latino", checkId: "LatinoLogo" }
-];
-
-function obtenerAseguradorasSeleccionadas() {
-    return aseguradoras
-        .map((aseguradora, index) => ({
-            ...aseguradora,
-            index,
-            checked: document.getElementById(aseguradora.checkId).checked
-        }))
-        .filter(aseguradora => aseguradora.checked);
-}
-
-function llenarCoberturasAutomaticas() {
-    const plan = obtenerPlanSeleccionado();
-
-    if (!plan) return;
-
-    actualizarVisibilidadPorPlan();
-
-    const datos = {
-        particular: {
-            dm: ["5%", "5%", "5%", "5%", "5%"],
-            rb: ["10%", "10%", "10%", "10%", "10%"],
-            rc: ["$4,000,000", "$3,000,000", "$3,000,000", "$4,000,000", "$3,000,000", "$3,000,000"],
-            rcd: ["0%", "0%", "0%", "0%", "0%", "0%"],
-            rco: ["Incluido", "Incluido", "Incluido", "Incluido", "Incluido", "Incluido"],
-            gm: ["$200,000", "$200,000", "$200,000", "$200,000", "$200,000", "$200,000"],
-            av: ["5 Eventos", "5 Eventos", "5 Eventos", "5 Eventos", "1 Evento", "5 Eventos"],
-            al: ["Incluida", "Incluida", "Incluida", "Incluida", "Incluida", "Incluida"],
-        },
-        uber: {
-            dm: ["10%", "10%", "10%", "10%", "10%"],
-            rb: ["20%", "20%", "20%", "20%", "20%"],
-            rc: ["$4,000,000  N/A", "$3,000,000  50UMAs", "$3,000,000  50UMAs", "$4,000,000  50UMAs", "$3,000,000  N/A", "$3,000,000  20UMAs"],
-            rcd: ["0%", "0%", "0%", "0%", "0%", "0%"],
-            rco: ["$1,5000,000", "$3,000,000", "5,000 UMAs", "5,000 UMAs", "5,000 UMAs", "5,000 UMAs"],
-            gm: ["$200,000", "$200,000", "$200,000", "$200,000", "$200,000", "$200,000"],
-            av: ["5 Eventos", "5 Eventos", "2 Eventos", "2 Eventos", "1 Eventos", "2 Eventos"],
-            al: ["Incluida", "Incluida", "Incluida", "Incluida", "Incluida", "Incluida"],
-        },
-        multiplataforma: {
-            dm: ["10%", "10%", "10%", "10%", "10%"],
-            rb: ["20%", "20%", "20%", "20%", "20%"],
-            rc: ["$4,000,000  50UMAs", "$3,000,000  50UMAs", "$3,000,000  50UMAs", "$4,000,000  50UMAs", "$3,000,000  N/A", "$3,000,000  20UMAs"],
-            rcd: ["0%", "0%", "0%", "0%", "0%", "0%"],
-            rco: ["5,000 UMAs", "$3,000,000", "5,000 UMAs", "5,000 UMAs", "5,000 UMAs", "5,000 UMAs"],
-            gm: ["$200,000", "$200,000", "$200,000", "$200,000", "$200,000", "$200,000"],
-            av: ["2 Eventos", "5 Eventos", "2 Eventos", "2 Eventos", "1 Evento", "2 Eventos"],
-            al: ["Incluida", "Incluida", "Incluida", "Incluida", "Incluida", "Incluida"],
-        }
-    };
-
-    llenarInputs(".dm__Input", datos[plan].dm, false);
-    llenarInputs(".rb__Input", datos[plan].rb, false);
-    llenarInputs(".rc__Input", datos[plan].rc);
-    llenarInputs(".rcd__Input", datos[plan].rcd);
-    llenarInputs(".rco__Input", datos[plan].rco);
-    llenarInputs(".gm__Input", datos[plan].gm);
-    llenarInputs(".av__Input", datos[plan].av);
-    llenarInputs(".al__Input", datos[plan].al);
-}
-
-function llenarInputs(selector, valores, incluyeAXA = true) {
-    const inputs = document.querySelectorAll(selector);
-
-    inputs.forEach((input, index) => {
-        const aseguradoraIndex = incluyeAXA ? index : index + 1;
-        const estaSeleccionada = document.getElementById(aseguradoras[aseguradoraIndex].checkId).checked;
-
-        if (estaSeleccionada) {
-            input.value = valores[index] || "";
-        } else {
-            input.value = "";
-        }
-    });
-}
-
-const checksAseguradoras = [
-    "AXAlogo",
-    "GNPlogo",
-    "QualitasLogo",
-    "BanorteLogo",
-    "SPTlogo",
-    "LatinoLogo"
-];
-
-checksAseguradoras.forEach((id) => {
-    document.getElementById(id).addEventListener("change", () => {
-        llenarCoberturasAutomaticas();
-    });
-});
-
-function formatearFechaInput(id) {
-    const valor = document.getElementById(id).value;
-
-    if (!valor) return "-";
-
-    const [year, month, day] = valor.split("-");
-    return `${day}/${month}/${year}`;
-}
-
-function actualizarVisibilidadPorPlan() {
-    const plan = obtenerPlanSeleccionado();
-    const esParticular = plan === "particular";
-
-    const labelRCO = Array.from(document.querySelectorAll(".deducible__Label")).find((label) => {
-        const texto = label.textContent.toLowerCase();
-        return texto.includes("responsabilidad civil") && texto.includes("ocupantes");
-    });
-
-    const inputsRCO = document.querySelectorAll(".rco__Input");
-
-    if (labelRCO) {
-        labelRCO.style.display = esParticular ? "none" : "";
-    }
-
-    inputsRCO.forEach((input) => {
-        input.style.display = esParticular ? "none" : "";
-    });
-}
-
-function ocultarFilaPorTexto(textoBuscado, ocultar) {
-    const labels = Array.from(document.querySelectorAll(".deducible__Label"));
-
-    const label = labels.find((item) =>
-        item.textContent.toLowerCase().includes(textoBuscado.toLowerCase())
-    );
-
-    if (!label) return;
-
-    label.style.display = ocultar ? "none" : "";
-
-    let elemento = label.nextElementSibling;
-    let contador = 0;
-
-    while (elemento && contador < 6) {
-        elemento.style.display = ocultar ? "none" : "";
-        elemento = elemento.nextElementSibling;
-        contador++;
-    }
-}
-
-function obtenerTipoCobertura() {
-    if (document.getElementById("coberturaAmplia").checked) return "amplia";
-    if (document.getElementById("coberturaLimitada").checked) return "limitada";
-    if (document.getElementById("coberturaRC").checked) return "rc";
-    return "amplia";
-}
-
-function actualizarVisibilidadCobertura() {
-    const tipo = obtenerTipoCobertura();
-
-    ocultarFilaPorTexto("Suma Asegurada", tipo === "rc");
-    ocultarFilaPorTexto("Daños Materiales", tipo === "limitada" || tipo === "rc");
-    ocultarFilaPorTexto("Robo Total", tipo === "rc");
 }
 
 function obtenerTextoPlan() {
@@ -283,6 +96,13 @@ function obtenerTextoPlan() {
     return "-";
 }
 
+function obtenerTipoCobertura() {
+    if (document.getElementById("coberturaAmplia").checked) return "amplia";
+    if (document.getElementById("coberturaLimitada").checked) return "limitada";
+    if (document.getElementById("coberturaRC").checked) return "rc";
+    return "amplia";
+}
+
 function obtenerTextoCobertura() {
     if (document.getElementById("coberturaAmplia").checked) return "Amplia";
     if (document.getElementById("coberturaLimitada").checked) return "Limitada";
@@ -290,371 +110,107 @@ function obtenerTextoCobertura() {
     return "Amplia";
 }
 
-document.getElementById("generarPDF").addEventListener("click", async () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF("landscape", "mm", "letter");
-
-    const aseguradorasPDF = [
-        { nombre: "AXA", checkId: "AXAlogo", index: 0, logo: "LOGO/AXA_Logo.svg.png" },
-        { nombre: "GNP", checkId: "GNPlogo", index: 1, logo: "LOGO/gnp-seguros.png" },
-        { nombre: "Qualitas", checkId: "QualitasLogo", index: 2, logo: "LOGO/qualitas_logo.png" },
-        { nombre: "Banorte", checkId: "BanorteLogo", index: 3, logo: "LOGO/banorte.png" },
-        { nombre: "SPT", checkId: "SPTlogo", index: 4, logo: "LOGO/images.png" },
-        { nombre: "Latino", checkId: "LatinoLogo", index: 5, logo: "LOGO/latino seguros.png" }
-    ];
-
-    const seleccionadas = aseguradorasPDF.filter((aseguradora) => {
-        return document.getElementById(aseguradora.checkId).checked;
-    });
-
-    if (seleccionadas.length === 0) {
-        alert("Selecciona al menos una aseguradora para generar el PDF.");
-        return;
-    }
-
-    async function cargarImagen(src) {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = img.naturalWidth;
-                canvas.height = img.naturalHeight;
-                canvas.getContext("2d").drawImage(img, 0, 0);
-
-                resolve({
-                    data: canvas.toDataURL("image/png"),
-                    width: img.naturalWidth,
-                    height: img.naturalHeight
-                });
-            };
-
-            img.onerror = () => resolve(null);
-            img.src = src;
-        });
-    }
-
-    function dibujarImagenAjustada(doc, imagen, x, y, maxW, maxH) {
-        if (!imagen) return;
-
-        const ratio = imagen.width / imagen.height;
-        let w = maxW;
-        let h = w / ratio;
-
-        if (h > maxH) {
-            h = maxH;
-            w = h * ratio;
-        }
-
-        doc.addImage(
-            imagen.data,
-            "PNG",
-            x + (maxW - w) / 2,
-            y + (maxH - h) / 2,
-            w,
-            h
-        );
-    }
-
-    function valorDeLista(selector, index) {
-        const elementos = Array.from(document.querySelectorAll(selector));
-        const elemento = elementos[index];
-        return elemento ? elemento.value || "-" : "-";
-    }
-
-    function obtenerValores(selector) {
-        return seleccionadas.map(aseguradora => valorDeLista(selector, aseguradora.index));
-    }
-
-    function obtenerRT() {
-        const rbInputs = Array.from(document.querySelectorAll(".rb__Input"));
-
-        return seleccionadas.map((aseguradora) => {
-            if (aseguradora.index === 0) return document.getElementById("rbAXA").value || "-";
-            return rbInputs[aseguradora.index - 1]?.value || "-";
-        });
-    }
-
-    function obtenerSumaAsegurada() {
-        const sumaIds = ["smaAXA", "smaGNP", "smaQual", "smaBanorte", "smaSPT", "smaLatino"];
-        const valorIds = ["valorAXA", "valorGNP", "valorQua", "valorBanorte", "valorSPT", "valorLatino"];
-
-        return seleccionadas.map((aseguradora) => {
-            const suma = document.getElementById(sumaIds[aseguradora.index])?.value || "-";
-            const valor = document.getElementById(valorIds[aseguradora.index])?.value || "";
-
-            if (valor) {
-                return `${suma} / ${formatoPesos(valor)}`;
-            }
-
-            return suma;
-        });
-    }
-
-    function obtenerDeducibleDañosMateriales() {
-        const dmInputs = Array.from(document.querySelectorAll(".dm__Input"));
-
-        return seleccionadas.map((aseguradora) => {
-            if (aseguradora.index === 0) {
-                return document.getElementById("dmAXA").value || "-";
-            }
-
-            return dmInputs[aseguradora.index - 1]?.value || "-";
-        });
-    }
-
-    function convertirPrecio(numeroTexto) {
-        return Number(String(numeroTexto).replace(/[^0-9.]/g, "")) || Infinity;
-    }
-
-    function formatoPesos(valor) {
-        const numero = Number(String(valor).replace(/[^0-9.]/g, ""));
-
-        if (!numero) return valor || "-";
-
-        return numero.toLocaleString("es-MX", {
-            style: "currency",
-            currency: "MXN",
-            minimumFractionDigits: 2
-        });
-    }
-
-    const logoSwartz = await cargarImagen("logo-Photoroom.png");
-
-    const logosAseguradoras = {};
-    for (const aseguradora of seleccionadas) {
-        logosAseguradoras[aseguradora.nombre] = await cargarImagen(aseguradora.logo);
-    }
-
-    const costosTodos = Array.from(document.querySelectorAll(".price__Input"));
-    const costosSinFormato = seleccionadas.map(aseguradora => {
-        const input = costosTodos[aseguradora.index];
-        return input ? input.value || "-" : "-";
-    });
-
-    const costos = costosSinFormato.map(formatoPesos);
-    const preciosNumericos = costosSinFormato.map(convertirPrecio);
-    const precioMinimo = Math.min(...preciosNumericos);
-
-    const formasPagoTodas = Array.from(document.querySelectorAll(".payment__Options"));
-    const formasPago = seleccionadas.map(aseguradora => {
-        const contenedor = formasPagoTodas[aseguradora.index];
-        return contenedor ? contenedor.innerText.replace(/\n/g, " / ") : "-";
-    });
-
-    const azul = [49, 134, 245];
-    const azulClaro = [226, 239, 255];
-    const dorado = [193, 148, 93];
-    const grisTexto = [31, 41, 51];
-    const verdeColumna = [218, 247, 224];
-    const verdeCosto = [190, 242, 203];
-
-    if (logoSwartz) {
-        dibujarImagenAjustada(doc, logoSwartz, 14, 7, 44, 18);
-    }
-
-    doc.setFont(undefined, "bold");
-    doc.setTextColor(...grisTexto);
-    doc.setFontSize(18);
-    doc.text("Comparativa de Seguro de Auto", 70, 13);
-
-    doc.setFontSize(12);
-    doc.setFont(undefined, "bold");
-    doc.setTextColor(...azul);
-    doc.text("Cliente", 70, 22);
-    doc.text("Vehículo", 135, 22);
-    doc.text("Agente", 205, 22);
-    
-    doc.setFontSize(10);
-    doc.setFont(undefined, "normal");
-    doc.setTextColor(...grisTexto);
-    
-    const agenteNombre = document.getElementById("agenteSelect").selectedOptions[0]?.textContent || "";
-    const correo = document.getElementById("correoAgente").textContent || "";
-    const extension = document.getElementById("extensionAgente").textContent || "";
-    
-    doc.text(document.getElementById("clientName").value || "-", 70, 27);
-    doc.text(`Nac: ${formatearFechaInput("clientBdy")}`, 70, 32);
-    doc.text(`C.P: ${document.getElementById("clientCP").value || "-"}`, 70, 37);
-    
-    doc.text(`${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`, 135, 27);
-    doc.text(`Plan: ${obtenerTextoPlan()}`, 135, 32);
-    doc.text(`Cobertura: ${obtenerTextoCobertura()}`, 135, 37);
-    
-    doc.text(agenteNombre, 205, 27);
-    doc.text(correo.replace("Correo:", "Correo: "), 205, 32);
-    doc.text(extension, 205, 37);
-    
-    doc.setFont(undefined, "bold");
-    doc.setFontSize(9);
-    doc.text(`Fecha: ${fechaCoti.textContent}`, 230, 13);
-
-    doc.setDrawColor(...dorado);
-    doc.setLineWidth(1.2);
-    doc.line(14, 42, 265, 42);
-
-    const head = [["Rubro", ...seleccionadas.map(() => "")]];
-
-    const planSeleccionado = obtenerPlanSeleccionado();
-
-const tipoCobertura = obtenerTipoCobertura();
-
-const body = [
-    ["Costo Anual", ...costos],
-    ["Otras formas de pago", ...formasPago]
-];
-
-if (tipoCobertura === "amplia") {
-    body.push(
-        ["Suma Asegurada", ...obtenerSumaAsegurada()],
-        ["Daños Materiales", ...obtenerDeducibleDañosMateriales()],
-        ["Robo Total", ...obtenerRT()]
-    );
+function obtenerAseguradorasSeleccionadas() {
+    return aseguradoras
+        .map((aseguradora, index) => ({ ...aseguradora, index, checked: document.getElementById(aseguradora.checkId).checked }))
+        .filter(aseguradora => aseguradora.checked);
 }
 
-if (tipoCobertura === "limitada") {
-    body.push(
-        ["Suma Asegurada", ...obtenerSumaAsegurada()],
-        ["Robo Total", ...obtenerRT()]
-    );
+function debeMostrarValor(texto) {
+    const normalizado = texto.toLowerCase();
+    return normalizado.includes("valor factura") || normalizado.includes("valor convenido") || normalizado.includes("convenido +10") || normalizado.includes("convenido+10");
 }
 
-body.push(
-    ["Responsabilidad Civil Daños a Terceros", ...obtenerValores(".rc__Input")]
-);
-
-if (obtenerPlanSeleccionado() !== "particular") {
-    body.push(["Responsabilidad Civil Ocupantes", ...obtenerValores(".rco__Input")]);
+function obtenerSumaTexto(index) {
+    const select = document.getElementById(sumaIds[index]);
+    const input = document.getElementById(valorIds[index]);
+    const suma = select?.value || "Seleccione";
+    const valor = input?.value || "";
+    if (suma === "Seleccione") return "-";
+    if (debeMostrarValor(suma)) return valor ? formatoPesos(valor) : suma;
+    return suma;
 }
 
-body.push(
-    ["Gastos Médicos Ocupantes", ...obtenerValores(".gm__Input")],
-    ["Asistencia Vial", ...obtenerValores(".av__Input")],
-    ["Asistencia Legal", ...obtenerValores(".al__Input")],
-    ["Accidentes al Conductor", ...obtenerValores(".ac__Input")]
-);
-
-    doc.autoTable({
-        startY: 47,
-        head,
-        body,
-        theme: "grid",
-        headStyles: {
-            fillColor: [255, 255, 255],
-            textColor: grisTexto,
-            lineColor: dorado,
-            lineWidth: 0.45,
-            minCellHeight: 18
-        },
-        styles: {
-            fontSize: 8,
-            halign: "center",
-            valign: "middle",
-            cellPadding: 2,
-            lineColor: dorado,
-            lineWidth: 0.25
-        },
-        alternateRowStyles: {
-            fillColor: [248, 250, 252]
-        },
-        columnStyles: {
-            0: {
-                halign: "left",
-                fontStyle: "bold",
-                cellWidth: 45,
-                fillColor: azulClaro
-            }
-        },
-        didParseCell: function (data) {
-            if (data.section === "body" && data.column.index > 0) {
-                const costoIndex = data.column.index - 1;
-                const esColumnaMasBarata = preciosNumericos[costoIndex] === precioMinimo;
-
-                if (esColumnaMasBarata) {
-                    data.cell.styles.fillColor = verdeColumna;
-                    data.cell.styles.textColor = [20, 90, 45];
-                    data.cell.styles.fontStyle = "bold";
-                }
-            }
-
-            if (data.section === "body" && data.row.index === 0) {
-                data.cell.styles.fontSize = data.column.index === 0 ? 10 : 14;
-                data.cell.styles.fontStyle = "bold";
-                data.cell.styles.minCellHeight = 13;
-
-                if (data.column.index > 0) {
-                    const costoIndex = data.column.index - 1;
-                    const esMasBarato = preciosNumericos[costoIndex] === precioMinimo;
-
-                    data.cell.styles.textColor = esMasBarato ? [20, 120, 55] : [20, 80, 150];
-                    data.cell.styles.fillColor = esMasBarato ? verdeCosto : [239, 246, 255];
-                }
-            }
-
-            if (data.section === "body" && data.row.index === 1) {
-                data.cell.styles.fontSize = 8;
-
-                if (data.column.index === 0) {
-                    data.cell.styles.fillColor = azulClaro;
-                } else if (data.cell.styles.fillColor !== verdeColumna) {
-                    data.cell.styles.fillColor = [255, 252, 245];
-                }
-            }
-        },
-        didDrawCell: function (data) {
-            if (data.section === "head" && data.column.index > 0) {
-                const aseguradora = seleccionadas[data.column.index - 1];
-                const logo = logosAseguradoras[aseguradora.nombre];
-
-                dibujarImagenAjustada(
-                    doc,
-                    logo,
-                    data.cell.x + 2,
-                    data.cell.y + 2,
-                    data.cell.width - 4,
-                    data.cell.height - 4
-                );
-            }
-        }
+function sincronizarSumaAsegurada(index = null) {
+    const indices = index === null ? [0, 1, 2, 3, 4, 5] : [index];
+    indices.forEach((itemIndex) => {
+        const rtInput = document.querySelectorAll(".sumaRt__Input")[itemIndex];
+        if (rtInput) rtInput.value = obtenerSumaTexto(itemIndex);
     });
+}
 
-    doc.setFontSize(7);
-    doc.setTextColor(90, 90, 90);
-
-    const notaVigencia = "Cotizaciones con vigencia de 15 dias naturales, excepto Qualitas con vigencia de 7 dias. Posterior a ese periodo, los costos pueden sufrir cambios sin previo aviso.";
-    const notaPartida = doc.splitTextToSize(notaVigencia, 245);
-
-    doc.text(notaPartida, 14, 199);
-    doc.text("Documento generado por Swartz Seguros y Contabilidad", 14, 207);
-
-    const nombreCliente = document.getElementById("clientName").value || "cliente";
-
-    const nombreArchivo = nombreCliente
-        .trim()
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9ñ-]/g, "");
-    
-    doc.save(`comparativa-${nombreArchivo}.pdf`);
+function configurarSumasAseguradas() {
+    sumaIds.forEach((selectId, index) => {
+        const select = document.getElementById(selectId);
+        const input = document.getElementById(valorIds[index]);
+        if (!select || !input) return;
+        input.classList.add("valorOculto");
+        select.addEventListener("change", () => {
+            if (debeMostrarValor(select.value)) {
+                input.classList.remove("valorOculto");
+            } else {
+                input.classList.add("valorOculto");
+                input.value = "";
+            }
+            sincronizarSumaAsegurada(index);
+        });
+        input.addEventListener("input", () => sincronizarSumaAsegurada(index));
     });
+}
 
+function llenarInputs(selector, valores, incluyeAXA = true) {
+    const inputs = document.querySelectorAll(selector);
+    inputs.forEach((input, index) => {
+        const aseguradoraIndex = incluyeAXA ? index : index + 1;
+        const estaSeleccionada = document.getElementById(aseguradoras[aseguradoraIndex].checkId).checked;
+        input.value = estaSeleccionada ? valores[index] || "" : "";
+    });
+}
+
+function llenarDeduciblesSinDeducible() {
+    [".rcoDed__Input", ".gmDed__Input", ".avDed__Input", ".alDed__Input", ".acDed__Input"].forEach((selector) => {
+        document.querySelectorAll(selector).forEach((input) => input.value = "Sin deducible");
+    });
+}
+
+function llenarCoberturasAutomaticas() {
+    const plan = obtenerPlanSeleccionado();
+    if (!plan) return;
+    const datos = datosPorPlan[plan];
+    llenarInputs(".dm__Input", datos.dm, false);
+    llenarInputs(".rb__Input", datos.rb, false);
+    llenarInputs(".rc__Input", datos.rc);
+    llenarInputs(".rcd__Input", datos.rcd);
+    llenarInputs(".rco__Input", datos.rco);
+    llenarInputs(".gm__Input", datos.gm);
+    llenarInputs(".av__Input", datos.av);
+    llenarInputs(".al__Input", datos.al);
+    llenarInputs(".ac__Input", datos.ac);
+    llenarDeduciblesSinDeducible();
+    sincronizarSumaAsegurada();
+    actualizarVisibilidadPorPlan();
+    actualizarVisibilidadCobertura();
+}
+
+function setDisplayForElements(selector, ocultar) {
+    document.querySelectorAll(selector).forEach((elemento) => elemento.style.display = ocultar ? "none" : "");
+}
+
+function actualizarVisibilidadPorPlan() {
+    setDisplayForElements(".rowRco", obtenerPlanSeleccionado() === "particular");
+}
+
+function actualizarVisibilidadCobertura() {
+    const tipo = obtenerTipoCobertura();
+    setDisplayForElements(".rowDm", tipo === "limitada" || tipo === "rc");
+    setDisplayForElements(".rowRobo", tipo === "rc");
+}
 
 function permitirSoloUno(ids) {
     const checks = ids.map(id => document.getElementById(id));
-
     checks.forEach((check) => {
         check.addEventListener("change", () => {
-            if (check.checked) {
-                checks.forEach((otroCheck) => {
-                    if (otroCheck !== check) {
-                        otroCheck.checked = false;
-                    }
-                });
-            }
-
+            if (check.checked) checks.forEach((otroCheck) => { if (otroCheck !== check) otroCheck.checked = false; });
             llenarCoberturasAutomaticas();
             actualizarVisibilidadPorPlan();
             actualizarVisibilidadCobertura();
@@ -662,12 +218,231 @@ function permitirSoloUno(ids) {
     });
 }
 
+function limpiarFormulario() {
+    document.querySelectorAll("input").forEach((input) => {
+        if (input.type === "checkbox") input.checked = false;
+        else input.value = "";
+    });
+    document.querySelectorAll("select").forEach((select) => select.selectedIndex = 0);
+    document.getElementById("coberturaAmplia").checked = true;
+    correoAgente.textContent = "Correo:";
+    extensionAgente.textContent = "Tel: 33 2878 5446 Ext:";
+    document.querySelectorAll(".valorInput").forEach((input) => input.classList.add("valorOculto"));
+    sincronizarSumaAsegurada();
+    actualizarVisibilidadPorPlan();
+    actualizarVisibilidadCobertura();
+    actualizarFecha();
+}
+
+function valorDeLista(selector, index) {
+    const elemento = Array.from(document.querySelectorAll(selector))[index];
+    return elemento ? elemento.value || "-" : "-";
+}
+
+function obtenerValoresPDF(selector, seleccionadas) {
+    return seleccionadas.map(aseguradora => valorDeLista(selector, aseguradora.index));
+}
+
+function obtenerValoresPDFSinAXA(selector, seleccionadas, axaSelector) {
+    const inputs = Array.from(document.querySelectorAll(selector));
+    return seleccionadas.map((aseguradora) => {
+        if (aseguradora.index === 0) return document.querySelector(axaSelector)?.value || "-";
+        return inputs[aseguradora.index - 1]?.value || "-";
+    });
+}
+
+async function cargarImagen(src) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            canvas.getContext("2d").drawImage(img, 0, 0);
+            resolve({ data: canvas.toDataURL("image/png"), width: img.naturalWidth, height: img.naturalHeight });
+        };
+        img.onerror = () => resolve(null);
+        img.src = src;
+    });
+}
+
+function dibujarImagenAjustada(doc, imagen, x, y, maxW, maxH) {
+    if (!imagen) return;
+    const ratio = imagen.width / imagen.height;
+    let w = maxW;
+    let h = w / ratio;
+    if (h > maxH) {
+        h = maxH;
+        w = h * ratio;
+    }
+    doc.addImage(imagen.data, "PNG", x + (maxW - w) / 2, y + (maxH - h) / 2, w, h);
+}
+
+function agregarFilaPares(body, nombre, seleccionadas, sumaSelector, dedSelector, axaDedSelector = null) {
+    const fila = [nombre];
+    seleccionadas.forEach((aseguradora) => {
+        fila.push(valorDeLista(sumaSelector, aseguradora.index));
+        if (axaDedSelector && aseguradora.index === 0) {
+            fila.push(document.querySelector(axaDedSelector)?.value || "-");
+        } else if (axaDedSelector) {
+            const dedInputs = Array.from(document.querySelectorAll(dedSelector));
+            fila.push(dedInputs[aseguradora.index - 1]?.value || "-");
+        } else {
+            fila.push(valorDeLista(dedSelector, aseguradora.index));
+        }
+    });
+    body.push(fila);
+}
+
+async function generarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("landscape", "mm", "letter");
+    const seleccionadas = obtenerAseguradorasSeleccionadas();
+    if (seleccionadas.length === 0) {
+        alert("Selecciona al menos una aseguradora para generar el PDF.");
+        return;
+    }
+
+    const logoSwartz = await cargarImagen("logo-Photoroom.png");
+    const logosAseguradoras = {};
+    for (const aseguradora of seleccionadas) logosAseguradoras[aseguradora.nombre] = await cargarImagen(aseguradora.logo);
+
+    const costosTodos = Array.from(document.querySelectorAll(".price__Input"));
+    const costosSinFormato = seleccionadas.map(aseguradora => costosTodos[aseguradora.index]?.value || "-");
+    const costos = costosSinFormato.map(formatoPesos);
+    const preciosNumericos = costosSinFormato.map(convertirPrecio);
+    const precioMinimo = Math.min(...preciosNumericos);
+    const formasPagoTodas = Array.from(document.querySelectorAll(".payment__Options"));
+    const formasPago = seleccionadas.map(aseguradora => formasPagoTodas[aseguradora.index]?.innerText.replace(/\n/g, " / ") || "-");
+
+    const azul = [49, 134, 245], azulClaro = [226, 239, 255], dorado = [193, 148, 93], grisTexto = [31, 41, 51];
+    const verdeColumna = [218, 247, 224], verdeCosto = [190, 242, 203];
+
+    if (logoSwartz) dibujarImagenAjustada(doc, logoSwartz, 14, 7, 44, 18);
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(...grisTexto);
+    doc.setFontSize(18);
+    doc.text("Comparativa de Seguro de Auto", 70, 13);
+    doc.setFontSize(12);
+    doc.setTextColor(...azul);
+    doc.text("Cliente", 70, 22);
+    doc.text("Vehículo", 135, 22);
+    doc.text("Agente", 205, 22);
+    doc.setFontSize(10);
+    doc.setFont(undefined, "normal");
+    doc.setTextColor(...grisTexto);
+    doc.text(document.getElementById("clientName").value || "-", 70, 27);
+    doc.text(`Nac: ${formatearFechaInput("clientBdy")}`, 70, 32);
+    doc.text(`C.P: ${document.getElementById("clientCP").value || "-"}`, 70, 37);
+    doc.text(`${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`, 135, 27);
+    doc.text(`Plan: ${obtenerTextoPlan()}`, 135, 32);
+    doc.text(`Cobertura: ${obtenerTextoCobertura()}`, 135, 37);
+    doc.text(agenteSelect.selectedOptions[0]?.textContent || "", 205, 27);
+    doc.text((correoAgente.textContent || "").replace("Correo:", "Correo: "), 205, 32);
+    doc.text(extensionAgente.textContent || "", 205, 37);
+    doc.setFont(undefined, "bold");
+    doc.setFontSize(9);
+    doc.text(`Fecha: ${fechaCoti.textContent}`, 230, 13);
+    doc.setDrawColor(...dorado);
+    doc.setLineWidth(1.2);
+    doc.line(14, 42, 265, 42);
+
+    const headTop = ["Rubro"];
+    const headSub = [""];
+    seleccionadas.forEach(() => {
+        headTop.push({ content: "", colSpan: 2 });
+        headSub.push("Suma asegurada", "Deducible");
+    });
+
+    const body = [
+        ["Costo Anual", ...costos.map(costo => ({ content: costo, colSpan: 2 }))],
+        ["Formas de pago", ...formasPago.map(forma => ({ content: forma, colSpan: 2 }))]
+    ];
+
+    const tipoCobertura = obtenerTipoCobertura();
+    if (tipoCobertura === "amplia") {
+        agregarFilaPares(body, "Daños Materiales", seleccionadas, ".sumaSelect", ".dm__Input", "#dmAXA");
+        body[body.length - 1] = ["Daños Materiales", ...seleccionadas.flatMap(a => [obtenerSumaTexto(a.index), a.index === 0 ? document.getElementById("dmAXA").value || "-" : Array.from(document.querySelectorAll(".dm__Input"))[a.index - 1]?.value || "-"])];
+        agregarFilaPares(body, "Robo Total", seleccionadas, ".sumaRt__Input", ".rb__Input", "#rbAXA");
+    }
+    if (tipoCobertura === "limitada") agregarFilaPares(body, "Robo Total", seleccionadas, ".sumaRt__Input", ".rb__Input", "#rbAXA");
+
+    agregarFilaPares(body, "Responsabilidad Civil Daños a Terceros", seleccionadas, ".rc__Input", ".rcd__Input");
+    if (obtenerPlanSeleccionado() !== "particular") agregarFilaPares(body, "Responsabilidad Civil Ocupantes", seleccionadas, ".rco__Input", ".rcoDed__Input");
+    agregarFilaPares(body, "Gastos Médicos Ocupantes", seleccionadas, ".gm__Input", ".gmDed__Input");
+    agregarFilaPares(body, "Asistencia Vial", seleccionadas, ".av__Input", ".avDed__Input");
+    agregarFilaPares(body, "Asistencia Legal", seleccionadas, ".al__Input", ".alDed__Input");
+    agregarFilaPares(body, "Accidentes al Conductor", seleccionadas, ".ac__Input", ".acDed__Input");
+    body.push(["No. Cotización", ...seleccionadas.map(a => ({ content: valorDeLista(".quote__Input", a.index), colSpan: 2 }))]);
+
+    doc.autoTable({
+        startY: 47,
+        head: [headTop, headSub],
+        body,
+        theme: "grid",
+        headStyles: { fillColor: [255, 255, 255], textColor: grisTexto, lineColor: dorado, lineWidth: 0.35, minCellHeight: 10 },
+        styles: { fontSize: 5.7, halign: "center", valign: "middle", cellPadding: 0.8, lineColor: dorado, lineWidth: 0.18, overflow: "linebreak" },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        columnStyles: { 0: { halign: "left", fontStyle: "bold", cellWidth: 33, fillColor: azulClaro } },
+        didParseCell: function (data) {
+            if (data.section === "body" && data.column.index > 0) {
+                const costoIndex = Math.floor((data.column.index - 1) / 2);
+                if (preciosNumericos[costoIndex] === precioMinimo) {
+                    data.cell.styles.fillColor = verdeColumna;
+                    data.cell.styles.textColor = [20, 90, 45];
+                    data.cell.styles.fontStyle = "bold";
+                }
+            }
+            if (data.section === "body" && data.row.index === 0) {
+                data.cell.styles.fontSize = data.column.index === 0 ? 8 : 10;
+                data.cell.styles.fontStyle = "bold";
+                if (data.column.index > 0) {
+                    const costoIndex = Math.floor((data.column.index - 1) / 2);
+                    const esMasBarato = preciosNumericos[costoIndex] === precioMinimo;
+                    data.cell.styles.textColor = esMasBarato ? [20, 120, 55] : [20, 80, 150];
+                    data.cell.styles.fillColor = esMasBarato ? verdeCosto : [239, 246, 255];
+                }
+            }
+        },
+        didDrawCell: function (data) {
+            if (data.section === "head" && data.row.index === 0 && data.column.index > 0) {
+                const aseguradora = seleccionadas[Math.floor((data.column.index - 1) / 2)];
+                if (aseguradora) dibujarImagenAjustada(doc, logosAseguradoras[aseguradora.nombre], data.cell.x + 2, data.cell.y + 1, data.cell.width - 4, data.cell.height - 2);
+            }
+        }
+    });
+
+    doc.setFontSize(7);
+    doc.setTextColor(90, 90, 90);
+    const notaVigencia = "Cotizaciones con vigencia de 15 dias naturales, excepto Qualitas con vigencia de 7 dias. Posterior a ese periodo, los costos pueden sufrir cambios sin previo aviso.";
+    doc.text(doc.splitTextToSize(notaVigencia, 245), 14, 199);
+    doc.text("Documento generado por Swartz Seguros y Contabilidad", 14, 207);
+
+    const nombreCliente = document.getElementById("clientName").value || "cliente";
+    const nombreArchivo = nombreCliente.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^a-z0-9ñ-]/g, "");
+    doc.save(`comparativa-${nombreArchivo}.pdf`);
+}
+
+agenteSelect.addEventListener("change", () => {
+    const agente = agentes[agenteSelect.value];
+    if (!agente) {
+        correoAgente.textContent = "Correo:";
+        extensionAgente.textContent = "Tel: 33 2878 5446 Ext:";
+        return;
+    }
+    correoAgente.textContent = `Correo: ${agente.correo}`;
+    extensionAgente.textContent = `Tel: 33 2878 5446 Ext: ${agente.extension}`;
+});
+
+actualizarFecha();
+configurarSumasAseguradas();
 permitirSoloUno(["Femenino", "Masculino"]);
 permitirSoloUno(["unitModeUber", "unitModeMulti", "unitModeNormal"]);
 permitirSoloUno(["coberturaAmplia", "coberturaLimitada", "coberturaRC"]);
-
-aseguradoras.forEach((aseguradora) => {
-    document.getElementById(aseguradora.checkId).addEventListener("change", () => {
-        llenarCoberturasAutomaticas();
-    });
-});
+aseguradoras.forEach((aseguradora) => document.getElementById(aseguradora.checkId).addEventListener("change", llenarCoberturasAutomaticas));
+document.getElementById("generarPDF").addEventListener("click", generarPDF);
+document.getElementById("limpiarFormulario").addEventListener("click", limpiarFormulario);
+llenarDeduciblesSinDeducible();
+sincronizarSumaAsegurada();
+actualizarVisibilidadCobertura();
