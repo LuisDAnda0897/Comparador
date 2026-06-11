@@ -437,7 +437,7 @@ async function generarPDF() {
 
     doc.setFontSize(7);
     doc.setTextColor(90, 90, 90);
-    const notaVigencia = "Cotizaciones con vigencia de 15 dias naturales, excepto Qualitas con vigencia de 7 dias. Posterior a ese periodo, los costos pueden sufrir cambios sin previo aviso.";
+    const notaVigencia = "Cotizacion con vigencia estimada de 15 dias naturales, excepto Qualitas con vigencia de 7 dias. La vigencia no garantiza precio fijo: el costo puede cambiar sin previo aviso por ajustes, promociones por tiempo limitado, disponibilidad o decision de la aseguradora. Una vez vencida la vigencia, el costo queda sujeto a recotizacion y es mas propenso a cambios.";
     doc.text(doc.splitTextToSize(notaVigencia, 245), 14, 199);
     doc.text("Documento generado por Swartz Seguros y Contabilidad", 14, 207);
 
