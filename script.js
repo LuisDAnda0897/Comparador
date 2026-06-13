@@ -349,15 +349,19 @@ async function generarPDF() {
     doc.line(14, 42, 265, 42);
 
     const headTop = ["Rubro"];
-    const headSub = [""];
     seleccionadas.forEach(() => {
         headTop.push({ content: "", colSpan: 2 });
-        headSub.push("Suma asegurada", "Deducible");
     });
+
+    const subEncabezadoCoberturas = [
+        "",
+        ...seleccionadas.flatMap(() => ["Suma asegurada", "Deducible"])
+    ];
 
     const body = [
         ["Costo Anual", ...costos.map(costo => ({ content: costo, colSpan: 2 }))],
-        ["Formas de pago", ...formasPago.map(forma => ({ content: forma, colSpan: 2 }))]
+        ["Formas de pago", ...formasPago.map(forma => ({ content: forma, colSpan: 2 }))],
+        subEncabezadoCoberturas
     ];
 
     const tipoCobertura = obtenerTipoCobertura();
@@ -398,7 +402,7 @@ async function generarPDF() {
 
     doc.autoTable({
         startY: 47,
-        head: [headTop, headSub],
+        head: [headTop],
         body,
         theme: "grid",
         tableWidth,
@@ -416,6 +420,14 @@ async function generarPDF() {
                     data.cell.styles.fontStyle = "bold";
                 }
             }
+            if (data.section === "body" && data.row.index === 2) {
+                data.cell.styles.fillColor = data.column.index === 0 ? azulClaro : [232, 242, 255];
+                data.cell.styles.textColor = grisTexto;
+                data.cell.styles.fontStyle = "bold";
+                data.cell.styles.fontSize = data.column.index === 0 ? 6.8 : 7.2;
+                data.cell.styles.minCellHeight = 8;
+            }
+
             if (data.section === "body" && data.row.index === 0) {
                 data.cell.styles.fontSize = data.column.index === 0 ? 9 : 12;
                 data.cell.styles.fontStyle = "bold";
