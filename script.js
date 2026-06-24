@@ -218,6 +218,82 @@ function permitirSoloUno(ids) {
     });
 }
 
+
+
+const paymentMethodLabels = {
+    anual: "Anual",
+    semestral: "Semestral",
+    trimestral: "Trimestral",
+    mensual: "Mensual"
+};
+
+function obtenerPaymentControl(index) {
+    return document.querySelector(`.payment__Control[data-index="${index}"]`);
+}
+
+function obtenerFormasPagoDisponibles(index) {
+    const control = obtenerPaymentControl(index);
+    if (!control) return "-";
+
+    const pendientes = Array.from(control.querySelectorAll(".payment__Mode"))
+        .filter(check => !check.checked)
+        .map(check => paymentMethodLabels[check.dataset.method] || check.dataset.method);
+
+    return pendientes.length ? pendientes.join(" / ") : "-";
+}
+
+function obtenerMetodoPagoSeleccionado(index) {
+    const control = obtenerPaymentControl(index);
+    return control?.querySelector(".payment__Mode:checked")?.dataset.method || "";
+}
+
+function obtenerDesglosePago(index) {
+    const control = obtenerPaymentControl(index);
+    if (!control) return "-";
+
+    const method = obtenerMetodoPagoSeleccionado(index);
+    if (!method) return "-";
+
+    const label = paymentMethodLabels[method] || method;
+    const total = control.querySelector(`.payment__Total[data-method="${method}"]`)?.value || "";
+    const first = control.querySelector(`.payment__First[data-method="${method}"]`)?.value || "";
+    const next = control.querySelector(`.payment__Next[data-method="${method}"]`)?.value || "";
+
+    const nextLabels = {
+        mensual: "Pago mensual",
+        semestral: "Segundo pago",
+        trimestral: "3 pagos mas"
+    };
+
+    return `${label}\nTotal: ${formatoPesos(total)}\n1er pago: ${formatoPesos(first)}\n${nextLabels[method]}: ${formatoPesos(next)}`;
+}
+
+function actualizarOpcionesPago(event = null) {
+    if (event?.target?.classList.contains("payment__Mode") && event.target.checked) {
+        const control = event.target.closest(".payment__Control");
+        control.querySelectorAll(".payment__Mode").forEach((check) => {
+            if (check !== event.target) check.checked = false;
+        });
+    }
+
+    document.querySelectorAll(".payment__Options").forEach((contenedor, index) => {
+        contenedor.textContent = obtenerFormasPagoDisponibles(index);
+    });
+
+    document.querySelectorAll(".payment__Control").forEach((control) => {
+        control.querySelectorAll(".payment__Breakdown").forEach((breakdown) => {
+            const method = breakdown.dataset.method;
+            const check = control.querySelector(`.payment__Mode[data-method="${method}"]`);
+            const visible = Boolean(check?.checked);
+            breakdown.classList.toggle("oculto", !visible);
+
+            if (!visible) {
+                breakdown.querySelectorAll("input").forEach(input => input.value = "");
+            }
+        });
+    });
+}
+
 function limpiarFormulario() {
     document.querySelectorAll("input").forEach((input) => {
         if (input.type === "checkbox") input.checked = false;
@@ -228,6 +304,8 @@ function limpiarFormulario() {
     correoAgente.textContent = "Correo:";
     extensionAgente.textContent = "Tel: 33 2878 5446 Ext:";
     document.querySelectorAll(".valorInput").forEach((input) => input.classList.add("valorOculto"));
+    document.querySelectorAll(".payment__Mode").forEach((check) => check.checked = false);
+    actualizarOpcionesPago();
     sincronizarSumaAsegurada();
     actualizarVisibilidadPorPlan();
     actualizarVisibilidadCobertura();
@@ -313,8 +391,9 @@ async function generarPDF() {
     const costos = costosSinFormato.map(formatoPesos);
     const preciosNumericos = costosSinFormato.map(convertirPrecio);
     const precioMinimo = Math.min(...preciosNumericos);
-    const formasPagoTodas = Array.from(document.querySelectorAll(".payment__Options"));
-    const formasPago = seleccionadas.map(aseguradora => formasPagoTodas[aseguradora.index]?.innerText.replace(/\n/g, " / ") || "-");
+    actualizarOpcionesPago();
+    const formasPago = seleccionadas.map(aseguradora => obtenerFormasPagoDisponibles(aseguradora.index));
+    const desglosesPago = seleccionadas.map(aseguradora => obtenerDesglosePago(aseguradora.index));
 
     const azul = [49, 134, 245], azulClaro = [226, 239, 255], dorado = [193, 148, 93], grisTexto = [31, 41, 51];
     const verdeColumna = [218, 247, 224], verdeCosto = [190, 242, 203];
@@ -360,7 +439,8 @@ async function generarPDF() {
 
     const body = [
         ["Costo Anual", ...costos.map(costo => ({ content: costo, colSpan: 2 }))],
-        ["Formas de pago", ...formasPago.map(forma => ({ content: forma, colSpan: 2 }))],
+        ["Otras formas de pago", ...formasPago.map(forma => ({ content: forma, colSpan: 2 }))],
+        ["Desglose de pagos", ...desglosesPago.map(desglose => ({ content: desglose, colSpan: 2 }))],
         subEncabezadoCoberturas
     ];
 
@@ -420,12 +500,23 @@ async function generarPDF() {
                     data.cell.styles.fontStyle = "bold";
                 }
             }
-            if (data.section === "body" && data.row.index === 2) {
+            if (data.section === "body" && data.row.index === 3) {
                 data.cell.styles.fillColor = data.column.index === 0 ? azulClaro : [232, 242, 255];
                 data.cell.styles.textColor = grisTexto;
                 data.cell.styles.fontStyle = "bold";
                 data.cell.styles.fontSize = data.column.index === 0 ? 6.8 : 7.2;
                 data.cell.styles.minCellHeight = 8;
+            }
+
+            if (data.section === "body" && data.row.index === 2) {
+                data.cell.styles.fontSize = data.column.index === 0 ? 8 : 7.2;
+                data.cell.styles.minCellHeight = 18;
+                if (data.column.index === 0) {
+                    data.cell.styles.fillColor = azulClaro;
+                    data.cell.styles.fontStyle = "bold";
+                } else if (data.cell.styles.fillColor !== verdeColumna) {
+                    data.cell.styles.fillColor = [255, 252, 245];
+                }
             }
 
             if (data.section === "body" && data.row.index === 0) {
@@ -475,8 +566,10 @@ permitirSoloUno(["Femenino", "Masculino"]);
 permitirSoloUno(["unitModeUber", "unitModeMulti", "unitModeNormal"]);
 permitirSoloUno(["coberturaAmplia", "coberturaLimitada", "coberturaRC"]);
 aseguradoras.forEach((aseguradora) => document.getElementById(aseguradora.checkId).addEventListener("change", llenarCoberturasAutomaticas));
+document.querySelectorAll(".payment__Mode").forEach((check) => check.addEventListener("change", actualizarOpcionesPago));
 document.getElementById("generarPDF").addEventListener("click", generarPDF);
 document.getElementById("limpiarFormulario").addEventListener("click", limpiarFormulario);
 llenarDeduciblesSinDeducible();
 sincronizarSumaAsegurada();
+actualizarOpcionesPago();
 actualizarVisibilidadCobertura();

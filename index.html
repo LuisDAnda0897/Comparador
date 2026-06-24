@@ -162,41 +162,134 @@
                 <div class="price__Table">
 
                     <label class="price__Label">Costo Anual</label>
-                    <input class="price__Input" placeholder="$0.00">
-                    <input class="price__Input" placeholder="$0.00">
-                    <input class="price__Input" placeholder="$0.00">
-                    <input class="price__Input" placeholder="$0.00">
-                    <input class="price__Input" placeholder="$0.00">
-                    <input class="price__Input" placeholder="$0.00">
+                    <input class="price__Input" data-index="0" placeholder="$0.00">
+                    <input class="price__Input" data-index="1" placeholder="$0.00">
+                    <input class="price__Input" data-index="2" placeholder="$0.00">
+                    <input class="price__Input" data-index="3" placeholder="$0.00">
+                    <input class="price__Input" data-index="4" placeholder="$0.00">
+                    <input class="price__Input" data-index="5" placeholder="$0.00">
 
                     <label class="price__Label">Otras formas<br>de pago</label>
 
-                    <div class="payment__Options">
-                        <span>Semestral</span>
+                    <div class="payment__Options" data-index="0"></div>
+                    <div class="payment__Options" data-index="1"></div>
+                    <div class="payment__Options" data-index="2"></div>
+                    <div class="payment__Options" data-index="3"></div>
+                    <div class="payment__Options" data-index="4"></div>
+                    <div class="payment__Options" data-index="5"></div>
+
+                    <label class="price__Label">Forma adicional<br>seleccionada</label>
+
+                    <div class="payment__Control" data-index="0">
+                        <label class="payment__Check payment__Check--base"><input type="checkbox" class="payment__Annual" checked disabled> Anual</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="semestral"> Semestral</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="mensual"> Mensual</label>
+                        <div class="payment__Breakdown oculto" data-method="semestral">
+                            <span>Semestral</span>
+                            <input class="payment__Total" data-method="semestral" placeholder="Total">
+                            <input class="payment__First" data-method="semestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="semestral" placeholder="Segundo pago">
+                            <em>Segundo pago <small>a los 6 meses</small></em>
+                        </div>
+                        <div class="payment__Breakdown oculto" data-method="mensual">
+                            <span>Mensual</span>
+                            <input class="payment__Total" data-method="mensual" placeholder="Total">
+                            <input class="payment__First" data-method="mensual" placeholder="1er pago">
+                            <input class="payment__Next" data-method="mensual" placeholder="Pago mensual">
+                            <em>Pago mensual</em>
+                        </div>
                     </div>
 
-                    <div class="payment__Options">
-                        <span>Semestral</span>
-                        <span>Trimestral</span>
+                    <div class="payment__Control" data-index="1">
+                        <label class="payment__Check payment__Check--base"><input type="checkbox" class="payment__Annual" checked disabled> Anual</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="semestral"> Semestral</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="trimestral"> Trimestral</label>
+                        <div class="payment__Breakdown oculto" data-method="semestral">
+                            <span>Semestral</span>
+                            <input class="payment__Total" data-method="semestral" placeholder="Total">
+                            <input class="payment__First" data-method="semestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="semestral" placeholder="Segundo pago">
+                            <em>Segundo pago <small>a los 6 meses</small></em>
+                        </div>
+                        <div class="payment__Breakdown oculto" data-method="trimestral">
+                            <span>Trimestral</span>
+                            <input class="payment__Total" data-method="trimestral" placeholder="Total">
+                            <input class="payment__First" data-method="trimestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="trimestral" placeholder="3 pagos mas">
+                            <em>3 pagos mas <small>c/ 3 meses</small></em>
+                        </div>
                     </div>
 
-                    <div class="payment__Options">
-                        <span>Semestral</span>
-                        <span>Trimestral</span>
+                    <div class="payment__Control" data-index="2">
+                        <label class="payment__Check payment__Check--base"><input type="checkbox" class="payment__Annual" checked disabled> Anual</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="semestral"> Semestral</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="trimestral"> Trimestral</label>
+                        <div class="payment__Breakdown oculto" data-method="semestral">
+                            <span>Semestral</span>
+                            <input class="payment__Total" data-method="semestral" placeholder="Total">
+                            <input class="payment__First" data-method="semestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="semestral" placeholder="Segundo pago">
+                            <em>Segundo pago <small>a los 6 meses</small></em>
+                        </div>
+                        <div class="payment__Breakdown oculto" data-method="trimestral">
+                            <span>Trimestral</span>
+                            <input class="payment__Total" data-method="trimestral" placeholder="Total">
+                            <input class="payment__First" data-method="trimestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="trimestral" placeholder="3 pagos mas">
+                            <em>3 pagos mas <small>c/ 3 meses</small></em>
+                        </div>
                     </div>
 
-                    <div class="payment__Options">
-                        <span>Semestral</span>
-                        <span>Trimestral</span>
+                    <div class="payment__Control" data-index="3">
+                        <label class="payment__Check payment__Check--base"><input type="checkbox" class="payment__Annual" checked disabled> Anual</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="semestral"> Semestral</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="trimestral"> Trimestral</label>
+                        <div class="payment__Breakdown oculto" data-method="semestral">
+                            <span>Semestral</span>
+                            <input class="payment__Total" data-method="semestral" placeholder="Total">
+                            <input class="payment__First" data-method="semestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="semestral" placeholder="Segundo pago">
+                            <em>Segundo pago <small>a los 6 meses</small></em>
+                        </div>
+                        <div class="payment__Breakdown oculto" data-method="trimestral">
+                            <span>Trimestral</span>
+                            <input class="payment__Total" data-method="trimestral" placeholder="Total">
+                            <input class="payment__First" data-method="trimestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="trimestral" placeholder="3 pagos mas">
+                            <em>3 pagos mas <small>c/ 3 meses</small></em>
+                        </div>
                     </div>
 
-                    <div class="payment__Options">
-                        <span>Semestral</span>
+                    <div class="payment__Control" data-index="4">
+                        <label class="payment__Check payment__Check--base"><input type="checkbox" class="payment__Annual" checked disabled> Anual</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="semestral"> Semestral</label>
+                        <div class="payment__Breakdown oculto" data-method="semestral">
+                            <span>Semestral</span>
+                            <input class="payment__Total" data-method="semestral" placeholder="Total">
+                            <input class="payment__First" data-method="semestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="semestral" placeholder="Segundo pago">
+                            <em>Segundo pago <small>a los 6 meses</small></em>
+                        </div>
                     </div>
 
-                    <div class="payment__Options">
-                        <span>Semestral</span>
-                        <span>Trimestral</span>
+                    <div class="payment__Control" data-index="5">
+                        <label class="payment__Check payment__Check--base"><input type="checkbox" class="payment__Annual" checked disabled> Anual</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="semestral"> Semestral</label>
+                        <label class="payment__Check"><input type="checkbox" class="payment__Mode" data-method="trimestral"> Trimestral</label>
+                        <div class="payment__Breakdown oculto" data-method="semestral">
+                            <span>Semestral</span>
+                            <input class="payment__Total" data-method="semestral" placeholder="Total">
+                            <input class="payment__First" data-method="semestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="semestral" placeholder="Segundo pago">
+                            <em>Segundo pago <small>a los 6 meses</small></em>
+                        </div>
+                        <div class="payment__Breakdown oculto" data-method="trimestral">
+                            <span>Trimestral</span>
+                            <input class="payment__Total" data-method="trimestral" placeholder="Total">
+                            <input class="payment__First" data-method="trimestral" placeholder="1er pago">
+                            <input class="payment__Next" data-method="trimestral" placeholder="3 pagos mas">
+                            <em>3 pagos mas <small>c/ 3 meses</small></em>
+                        </div>
                     </div>
 
                 </div>
