@@ -236,6 +236,7 @@ function obtenerFormasPagoDisponibles(index) {
     if (!control) return "-";
 
     const pendientes = Array.from(control.querySelectorAll(".payment__Mode"))
+        .filter(check => !(index === 0 && check.dataset.method === "mensual"))
         .filter(check => !check.checked)
         .map(check => paymentMethodLabels[check.dataset.method] || check.dataset.method);
 
@@ -437,12 +438,18 @@ async function generarPDF() {
         ...seleccionadas.flatMap(() => ["Suma asegurada", "Deducible"])
     ];
 
+    const hayDesglosePago = desglosesPago.some(desglose => desglose !== "-");
+
     const body = [
         ["Costo Anual", ...costos.map(costo => ({ content: costo, colSpan: 2 }))],
-        ["Otras formas de pago", ...formasPago.map(forma => ({ content: forma, colSpan: 2 }))],
-        ["Desglose de pagos", ...desglosesPago.map(desglose => ({ content: desglose, colSpan: 2 }))],
-        subEncabezadoCoberturas
+        ["Otras formas de pago", ...formasPago.map(forma => ({ content: forma, colSpan: 2 }))]
     ];
+
+    if (hayDesglosePago) {
+        body.push(["Desglose de pagos", ...desglosesPago.map(desglose => ({ content: desglose, colSpan: 2 }))]);
+    }
+
+    body.push(subEncabezadoCoberturas);
 
     const tipoCobertura = obtenerTipoCobertura();
     if (tipoCobertura === "amplia") {
@@ -500,7 +507,7 @@ async function generarPDF() {
                     data.cell.styles.fontStyle = "bold";
                 }
             }
-            if (data.section === "body" && data.row.index === 3) {
+            if (data.section === "body" && data.row.raw?.[0] === "") {
                 data.cell.styles.fillColor = data.column.index === 0 ? azulClaro : [232, 242, 255];
                 data.cell.styles.textColor = grisTexto;
                 data.cell.styles.fontStyle = "bold";
@@ -508,7 +515,7 @@ async function generarPDF() {
                 data.cell.styles.minCellHeight = 8;
             }
 
-            if (data.section === "body" && data.row.index === 2) {
+            if (data.section === "body" && data.row.raw?.[0] === "Desglose de pagos") {
                 data.cell.styles.fontSize = data.column.index === 0 ? 8 : 7.2;
                 data.cell.styles.minCellHeight = 18;
                 if (data.column.index === 0) {
