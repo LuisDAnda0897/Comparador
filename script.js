@@ -58,6 +58,17 @@ const datosPorPlan = {
         av: ["2 Eventos", "5 Eventos", "2 Eventos", "2 Eventos", "1 Evento", "2 Eventos"],
         al: ["Incluida", "Incluida", "Incluida", "Incluida", "Incluida", "Incluida"],
         ac: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    },
+    motoapp: {
+        dm: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        rb: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        rc: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        rcd: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        rco: ["", "", "", "", "", ""],
+        gm: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        av: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        al: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        ac: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
     }
 };
 
@@ -86,6 +97,7 @@ function obtenerPlanSeleccionado() {
     if (document.getElementById("unitModeUber").checked) return "uber";
     if (document.getElementById("unitModeMulti").checked) return "multiplataforma";
     if (document.getElementById("unitModeNormal").checked) return "particular";
+    if (document.getElementById("unitModeMoto").checked) return "motoapp";
     return "";
 }
 
@@ -93,6 +105,7 @@ function obtenerTextoPlan() {
     if (document.getElementById("unitModeUber").checked) return "Uber";
     if (document.getElementById("unitModeMulti").checked) return "Multiplataforma";
     if (document.getElementById("unitModeNormal").checked) return "Particular";
+    if (document.getElementById("unitModeMoto").checked) return "Moto App";
     return "-";
 }
 
@@ -197,7 +210,8 @@ function setDisplayForElements(selector, ocultar) {
 }
 
 function actualizarVisibilidadPorPlan() {
-    setDisplayForElements(".rowRco", obtenerPlanSeleccionado() === "particular");
+    const plan = obtenerPlanSeleccionado();
+    setDisplayForElements(".rowRco", plan === "particular" || plan === "motoapp");
 }
 
 function actualizarVisibilidadCobertura() {
@@ -460,7 +474,7 @@ async function generarPDF() {
     if (tipoCobertura === "limitada") agregarFilaPares(body, "Robo Total", seleccionadas, ".sumaRt__Input", ".rb__Input", "#rbAXA");
 
     agregarFilaPares(body, "Responsabilidad Civil Daños a Terceros", seleccionadas, ".rc__Input", ".rcd__Input");
-    if (obtenerPlanSeleccionado() !== "particular") agregarFilaPares(body, "Responsabilidad Civil Ocupantes", seleccionadas, ".rco__Input", ".rcoDed__Input");
+    if (!["particular", "motoapp"].includes(obtenerPlanSeleccionado())) agregarFilaPares(body, "Responsabilidad Civil Ocupantes", seleccionadas, ".rco__Input", ".rcoDed__Input");
     agregarFilaPares(body, "Gastos Médicos Ocupantes", seleccionadas, ".gm__Input", ".gmDed__Input");
     agregarFilaPares(body, "Asistencia Vial", seleccionadas, ".av__Input", ".avDed__Input");
     agregarFilaPares(body, "Asistencia Legal", seleccionadas, ".al__Input", ".alDed__Input");
@@ -570,7 +584,7 @@ agenteSelect.addEventListener("change", () => {
 actualizarFecha();
 configurarSumasAseguradas();
 permitirSoloUno(["Femenino", "Masculino"]);
-permitirSoloUno(["unitModeUber", "unitModeMulti", "unitModeNormal"]);
+permitirSoloUno(["unitModeUber", "unitModeMulti", "unitModeNormal", "unitModeMoto"]);
 permitirSoloUno(["coberturaAmplia", "coberturaLimitada", "coberturaRC"]);
 aseguradoras.forEach((aseguradora) => document.getElementById(aseguradora.checkId).addEventListener("change", llenarCoberturasAutomaticas));
 document.querySelectorAll(".payment__Mode").forEach((check) => check.addEventListener("change", actualizarOpcionesPago));
