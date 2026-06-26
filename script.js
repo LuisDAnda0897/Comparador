@@ -60,14 +60,14 @@ const datosPorPlan = {
         ac: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
     },
     motoapp: {
-        dm: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
-        rb: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
-        rc: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
-        rcd: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        dm: ["10%", "10%", "10%", "10%", "10%"],
+        rb: ["20%", "20%", "20%", "20%", "20%"],
+        rc: ["$3,000,000", "$3,000,000", "$3,000,000", "$4,000,000", "Pendiente", "Pendiente"],
+        rcd: ["N/A", "Sin Deducible", "N/A", "25 UMAs", "Pendiente", "Pendiente"],
         rco: ["", "", "", "", "", ""],
-        gm: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
-        av: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
-        al: ["Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente", "Pendiente"],
+        gm: ["$50,000", "$50,000", "$50,000", "$25,000", "Pendiente", "Pendiente"],
+        av: ["2 Eventos", "5 Eventos", "2 Eventos", "2 Eventos", "Pendiente", "Pendiente"],
+        al: ["Incluida", "Incluida", "Incluida", "Incluida", "Pendiente", "Pendiente"],
         ac: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
     }
 };
