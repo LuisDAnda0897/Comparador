@@ -212,6 +212,8 @@ function setDisplayForElements(selector, ocultar) {
 function actualizarVisibilidadPorPlan() {
     const plan = obtenerPlanSeleccionado();
     setDisplayForElements(".rowRco", plan === "particular" || plan === "motoapp");
+    actualizarVisibilidadMensual();
+    actualizarOpcionesPago();
 }
 
 function actualizarVisibilidadCobertura() {
@@ -250,7 +252,7 @@ function obtenerFormasPagoDisponibles(index) {
     if (!control) return "-";
 
     const pendientes = Array.from(control.querySelectorAll(".payment__Mode"))
-        .filter(check => !(index === 0 && check.dataset.method === "mensual"))
+        .filter(check => check.dataset.method !== "mensual")
         .filter(check => !check.checked)
         .map(check => paymentMethodLabels[check.dataset.method] || check.dataset.method);
 
@@ -283,7 +285,20 @@ function obtenerDesglosePago(index) {
     return `${label}\nTotal: ${formatoPesos(total)}\n1er pago: ${formatoPesos(first)}\n${nextLabels[method]}: ${formatoPesos(next)}`;
 }
 
+function actualizarVisibilidadMensual() {
+    const mostrarMensual = obtenerPlanSeleccionado() === "particular";
+
+    document.querySelectorAll('.payment__Mode[data-method="mensual"]').forEach((check) => {
+        const label = check.closest(".payment__Check");
+        if (label) label.style.display = mostrarMensual ? "" : "none";
+
+        if (!mostrarMensual) check.checked = false;
+    });
+}
+
 function actualizarOpcionesPago(event = null) {
+    actualizarVisibilidadMensual();
+
     if (event?.target?.classList.contains("payment__Mode") && event.target.checked) {
         const control = event.target.closest(".payment__Control");
         control.querySelectorAll(".payment__Mode").forEach((check) => {
