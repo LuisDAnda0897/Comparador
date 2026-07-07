@@ -425,8 +425,11 @@ async function generarPDF() {
     const formasPago = seleccionadas.map(aseguradora => obtenerFormasPagoDisponibles(aseguradora.index));
     const desglosesPago = seleccionadas.map(aseguradora => obtenerDesglosePago(aseguradora.index));
 
-    const azul = [49, 134, 245], azulClaro = [226, 239, 255], dorado = [193, 148, 93], grisTexto = [31, 41, 51];
-    const verdeColumna = [218, 247, 224], verdeCosto = [190, 242, 203];
+    const azul = [27, 85, 145], azulClaro = [239, 246, 255], dorado = [216, 163, 74], grisTexto = [24, 31, 42];
+    const grisSuave = [246, 248, 251], grisLinea = [226, 232, 240], grisMuted = [102, 112, 133];
+    const verdeColumna = [226, 247, 234], verdeCosto = [204, 245, 216];
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
 
     if (logoSwartz) dibujarImagenAjustada(doc, logoSwartz, 14, 7, 44, 18);
     doc.setFont(undefined, "bold");
@@ -457,6 +460,65 @@ async function generarPDF() {
     doc.setLineWidth(1.2);
     doc.line(14, 42, 265, 42);
 
+    doc.setFillColor(...grisSuave);
+    doc.rect(0, 0, pageWidth, pageHeight, "F");
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(10, 6, pageWidth - 20, 203, 3, 3, "F");
+
+    if (logoSwartz) dibujarImagenAjustada(doc, logoSwartz, 14, 9, 38, 15);
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(...grisTexto);
+    doc.setFontSize(17);
+    doc.text("Comparativa de Seguro de Auto", 62, 14);
+    doc.setFont(undefined, "normal");
+    doc.setTextColor(...grisMuted);
+    doc.setFontSize(8.5);
+    doc.text("Reporte de cotizacion con coberturas equivalentes", 62, 20);
+
+    doc.setDrawColor(...grisLinea);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(214, 8, 51, 18, 3, 3, "FD");
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(...grisMuted);
+    doc.setFontSize(6.8);
+    doc.text("FECHA", 219, 15);
+    doc.setTextColor(...grisTexto);
+    doc.setFontSize(8.2);
+    doc.text(fechaCoti.textContent, 238, 15);
+
+    doc.setFillColor(255, 250, 237);
+    doc.setDrawColor(247, 215, 155);
+    doc.roundedRect(62, 24, 42, 8, 4, 4, "FD");
+    doc.setTextColor(145, 91, 24);
+    doc.setFont(undefined, "bold");
+    doc.setFontSize(6.8);
+    doc.text(`PLAN ${obtenerTextoPlan().toUpperCase()}`, 67, 29.2);
+
+    doc.setFillColor(255, 255, 255);
+    doc.setDrawColor(...grisLinea);
+    doc.roundedRect(14, 35, 251, 22, 3, 3, "FD");
+    doc.setFontSize(6.8);
+    doc.setTextColor(...grisMuted);
+    doc.text("CLIENTE", 20, 42);
+    doc.text("VEHICULO", 92, 42);
+    doc.text("AGENTE", 176, 42);
+    doc.setFont(undefined, "bold");
+    doc.setFontSize(8.2);
+    doc.setTextColor(...grisTexto);
+    doc.text(document.getElementById("clientName").value || "-", 20, 47);
+    doc.text(`${document.getElementById("unitYear").value || ""} ${document.getElementById("unitName").value || ""}`.trim() || "-", 92, 47, { maxWidth: 76 });
+    doc.text(agenteSelect.selectedOptions[0]?.textContent || "-", 176, 47);
+    doc.setFont(undefined, "normal");
+    doc.setFontSize(7.2);
+    doc.setTextColor(...grisMuted);
+    doc.text(`Nac: ${formatearFechaInput("clientBdy")}   C.P: ${document.getElementById("clientCP").value || "-"}`, 20, 52);
+    doc.text(`Cobertura: ${obtenerTextoCobertura()}`, 92, 52);
+    doc.text((correoAgente.textContent || "").replace("Correo:", "Correo: "), 176, 52, { maxWidth: 82 });
+
+    doc.setDrawColor(...dorado);
+    doc.setLineWidth(0.9);
+    doc.line(14, 62, 265, 62);
+
     const headTop = ["Rubro"];
     seleccionadas.forEach(() => {
         headTop.push({ content: "", colSpan: 2 });
@@ -469,8 +531,9 @@ async function generarPDF() {
 
     const hayDesglosePago = desglosesPago.some(desglose => desglose !== "-");
 
+    const notaMsi = "El pago anual puede realizarse en una sola exhibicion o con tarjeta de credito a meses sin intereses, sujeto a autorizacion bancaria.";
     const body = [
-        ["Costo Anual", ...costos.map(costo => ({ content: costo, colSpan: 2 }))],
+        ["Costo Anual", ...costos.map(costo => ({ content: `PAGO ANUAL\n${costo}\nMSI disponibles`, colSpan: 2 }))],
         ["Otras formas de pago", ...formasPago.map(forma => ({ content: forma, colSpan: 2 }))]
     ];
 
@@ -478,6 +541,7 @@ async function generarPDF() {
         body.push(["Desglose de pagos", ...desglosesPago.map(desglose => ({ content: desglose, colSpan: 2 }))]);
     }
 
+    body.push(["MSI", { content: notaMsi, colSpan: seleccionadas.length * 2 }]);
     body.push(subEncabezadoCoberturas);
 
     const tipoCobertura = obtenerTipoCobertura();
@@ -496,7 +560,6 @@ async function generarPDF() {
     agregarFilaPares(body, "Accidentes al Conductor", seleccionadas, ".ac__Input", ".acDed__Input");
     body.push(["No. Cotización", ...seleccionadas.map(a => ({ content: valorDeLista(".quote__Input", a.index), colSpan: 2 }))]);
 
-    const pageWidth = doc.internal.pageSize.getWidth();
     const tableMargin = 10;
     const tableWidth = pageWidth - (tableMargin * 2);
     const rubroWidth = 34;
@@ -517,15 +580,15 @@ async function generarPDF() {
     }
 
     doc.autoTable({
-        startY: 47,
+        startY: 66,
         head: [headTop],
         body,
         theme: "grid",
         tableWidth,
         margin: { left: tableMargin, right: tableMargin },
-        headStyles: { fillColor: [255, 255, 255], textColor: grisTexto, lineColor: dorado, lineWidth: 0.35, minCellHeight: 12 },
-        styles: { fontSize: 6.8, halign: "center", valign: "middle", cellPadding: 1.45, lineColor: dorado, lineWidth: 0.18, overflow: "linebreak", minCellHeight: 8.5 },
-        alternateRowStyles: { fillColor: [248, 250, 252] },
+        headStyles: { fillColor: [255, 255, 255], textColor: grisTexto, lineColor: grisLinea, lineWidth: 0.25, minCellHeight: 11 },
+        styles: { fontSize: 6.6, halign: "center", valign: "middle", cellPadding: 1.35, lineColor: grisLinea, lineWidth: 0.15, overflow: "linebreak", minCellHeight: 7.3 },
+        alternateRowStyles: { fillColor: [249, 250, 252] },
         columnStyles,
         didParseCell: function (data) {
             if (data.section === "body" && data.column.index > 0) {
@@ -536,17 +599,28 @@ async function generarPDF() {
                     data.cell.styles.fontStyle = "bold";
                 }
             }
+            if (data.section === "body" && data.row.raw?.[0] === "MSI") {
+                data.cell.styles.fillColor = [255, 250, 237];
+                data.cell.styles.textColor = [92, 74, 45];
+                data.cell.styles.minCellHeight = 8.5;
+                data.cell.styles.fontSize = data.column.index === 0 ? 7 : 6.8;
+                if (data.column.index === 0) {
+                    data.cell.styles.fontStyle = "bold";
+                } else {
+                    data.cell.styles.halign = "left";
+                }
+            }
             if (data.section === "body" && data.row.raw?.[0] === "") {
                 data.cell.styles.fillColor = data.column.index === 0 ? azulClaro : [232, 242, 255];
                 data.cell.styles.textColor = grisTexto;
                 data.cell.styles.fontStyle = "bold";
                 data.cell.styles.fontSize = data.column.index === 0 ? 6.8 : 7.2;
-                data.cell.styles.minCellHeight = 8;
+                data.cell.styles.minCellHeight = 7.5;
             }
 
             if (data.section === "body" && data.row.raw?.[0] === "Desglose de pagos") {
-                data.cell.styles.fontSize = data.column.index === 0 ? 8 : 7.2;
-                data.cell.styles.minCellHeight = 18;
+                data.cell.styles.fontSize = data.column.index === 0 ? 7.5 : 6.8;
+                data.cell.styles.minCellHeight = 17;
                 if (data.column.index === 0) {
                     data.cell.styles.fillColor = azulClaro;
                     data.cell.styles.fontStyle = "bold";
@@ -556,7 +630,8 @@ async function generarPDF() {
             }
 
             if (data.section === "body" && data.row.index === 0) {
-                data.cell.styles.fontSize = data.column.index === 0 ? 9 : 12;
+                data.cell.styles.fontSize = data.column.index === 0 ? 8 : 8.8;
+                data.cell.styles.minCellHeight = 17;
                 data.cell.styles.fontStyle = "bold";
                 if (data.column.index > 0) {
                     const costoIndex = Math.floor((data.column.index - 1) / 2);
