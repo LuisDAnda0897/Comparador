@@ -324,11 +324,79 @@ function actualizarOpcionesPago(event = null) {
     });
 }
 
+function obtenerReferenciaCotizacion() {
+    const primerFolio = document.querySelector(".quote__Input");
+    return primerFolio?.previousElementSibling || primerFolio;
+}
+
+function crearInputCoberturaAdicional(rowId, aseguradoraIndex, parte) {
+    const input = document.createElement("input");
+    input.className = "coverage__Input additionalCoverage__Input";
+    input.placeholder = parte === 0 ? "Valor" : "Detalle";
+    input.dataset.rowId = rowId;
+    input.dataset.index = aseguradoraIndex;
+    input.dataset.part = parte;
+    return input;
+}
+
+function agregarCoberturaAdicional() {
+    const matriz = document.querySelector(".coverageMatrix");
+    const referencia = obtenerReferenciaCotizacion();
+    if (!matriz || !referencia) return;
+
+    const rowId = `additional-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const nombreCell = document.createElement("div");
+    nombreCell.className = "deducible__Label additionalCoverage__NameCell";
+    nombreCell.dataset.rowId = rowId;
+
+    const nombreInput = document.createElement("input");
+    nombreInput.className = "additionalCoverage__NameInput";
+    nombreInput.placeholder = "Nombre de cobertura";
+    nombreInput.dataset.rowId = rowId;
+
+    const borrarButton = document.createElement("button");
+    borrarButton.type = "button";
+    borrarButton.className = "additionalCoverage__Delete";
+    borrarButton.textContent = "Borrar";
+    borrarButton.addEventListener("click", () => borrarCoberturaAdicional(rowId));
+
+    nombreCell.append(nombreInput, borrarButton);
+    matriz.insertBefore(nombreCell, referencia);
+
+    aseguradoras.forEach((aseguradora, index) => {
+        matriz.insertBefore(crearInputCoberturaAdicional(rowId, index, 0), referencia);
+        matriz.insertBefore(crearInputCoberturaAdicional(rowId, index, 1), referencia);
+    });
+
+    nombreInput.focus();
+}
+
+function borrarCoberturaAdicional(rowId) {
+    document.querySelectorAll(`[data-row-id="${rowId}"]`).forEach((elemento) => elemento.remove());
+}
+
+function obtenerCoberturasAdicionalesPDF(seleccionadas) {
+    return Array.from(document.querySelectorAll(".additionalCoverage__NameCell"))
+        .map((row) => {
+            const rowId = row.dataset.rowId;
+            const nombre = row.querySelector(".additionalCoverage__NameInput")?.value?.trim() || "Cobertura adicional";
+            const valores = seleccionadas.flatMap((aseguradora) => {
+                const valor = document.querySelector(`.additionalCoverage__Input[data-row-id="${rowId}"][data-index="${aseguradora.index}"][data-part="0"]`)?.value || "-";
+                const detalle = document.querySelector(`.additionalCoverage__Input[data-row-id="${rowId}"][data-index="${aseguradora.index}"][data-part="1"]`)?.value || "-";
+                return [valor, detalle];
+            });
+            const tieneContenido = nombre !== "Cobertura adicional" || valores.some(valor => valor !== "-");
+            return tieneContenido ? Object.assign([nombre, ...valores], { esAdicional: true }) : null;
+        })
+        .filter(Boolean);
+}
+
 function limpiarFormulario() {
     document.querySelectorAll("input").forEach((input) => {
         if (input.type === "checkbox") input.checked = false;
         else input.value = "";
     });
+    document.querySelectorAll(".additionalCoverage__NameCell").forEach((row) => borrarCoberturaAdicional(row.dataset.rowId));
     document.querySelectorAll("select").forEach((select) => select.selectedIndex = 0);
     document.getElementById("coberturaAmplia").checked = true;
     correoAgente.textContent = "Correo:";
@@ -558,7 +626,12 @@ async function generarPDF() {
     agregarFilaPares(body, "Asistencia Vial", seleccionadas, ".av__Input", ".avDed__Input");
     agregarFilaPares(body, "Asistencia Legal", seleccionadas, ".al__Input", ".alDed__Input");
     agregarFilaPares(body, "Accidentes al Conductor", seleccionadas, ".ac__Input", ".acDed__Input");
+    obtenerCoberturasAdicionalesPDF(seleccionadas).forEach((fila) => body.push(fila));
     body.push(["No. Cotización", ...seleccionadas.map(a => ({ content: valorDeLista(".quote__Input", a.index), colSpan: 2 }))]);
+
+    const fontSizeTabla = body.length > 19 ? 5.2 : body.length > 16 ? 5.8 : 6.6;
+    const altoMinimoTabla = body.length > 19 ? 5.9 : body.length > 16 ? 6.4 : 7.3;
+    const paddingTabla = body.length > 19 ? 0.85 : body.length > 16 ? 1.05 : 1.35;
 
     const tableMargin = 10;
     const tableWidth = pageWidth - (tableMargin * 2);
@@ -587,7 +660,7 @@ async function generarPDF() {
         tableWidth,
         margin: { left: tableMargin, right: tableMargin },
         headStyles: { fillColor: [255, 255, 255], textColor: grisTexto, lineColor: grisLinea, lineWidth: 0.25, minCellHeight: 11 },
-        styles: { fontSize: 6.6, halign: "center", valign: "middle", cellPadding: 1.35, lineColor: grisLinea, lineWidth: 0.15, overflow: "linebreak", minCellHeight: 7.3 },
+        styles: { fontSize: fontSizeTabla, halign: "center", valign: "middle", cellPadding: paddingTabla, lineColor: grisLinea, lineWidth: 0.15, overflow: "linebreak", minCellHeight: altoMinimoTabla },
         alternateRowStyles: { fillColor: [249, 250, 252] },
         columnStyles,
         didParseCell: function (data) {
@@ -609,6 +682,11 @@ async function generarPDF() {
                 } else {
                     data.cell.styles.halign = "left";
                 }
+            }
+            if (data.section === "body" && data.row.raw?.esAdicional) {
+                data.cell.styles.fillColor = data.column.index === 0 ? [244, 247, 251] : [255, 255, 255];
+                data.cell.styles.textColor = grisTexto;
+                if (data.column.index === 0) data.cell.styles.fontStyle = "bold";
             }
             if (data.section === "body" && data.row.raw?.[0] === "") {
                 data.cell.styles.fillColor = data.column.index === 0 ? azulClaro : [232, 242, 255];
@@ -649,11 +727,18 @@ async function generarPDF() {
         }
     });
 
+    let notaY = (doc.lastAutoTable?.finalY || 190) + 6;
+    if (notaY > pageHeight - 18) {
+        doc.addPage("letter", "landscape");
+        doc.setFillColor(...grisSuave);
+        doc.rect(0, 0, pageWidth, pageHeight, "F");
+        notaY = 16;
+    }
     doc.setFontSize(7);
     doc.setTextColor(90, 90, 90);
     const notaVigencia = "Cotizacion con vigencia estimada de 15 dias naturales, excepto Qualitas con vigencia de 7 dias. La vigencia no garantiza precio fijo: el costo puede cambiar sin previo aviso por ajustes, promociones por tiempo limitado, disponibilidad o decision de la aseguradora. Una vez vencida la vigencia, el costo queda sujeto a recotizacion y es mas propenso a cambios.";
-    doc.text(doc.splitTextToSize(notaVigencia, 245), 14, 199);
-    doc.text("Documento generado por Swartz Seguros y Contabilidad", 14, 207);
+    doc.text(doc.splitTextToSize(notaVigencia, 245), 14, notaY);
+    doc.text("Documento generado por Swartz Seguros y Contabilidad", 14, notaY + 8);
 
     const nombreCliente = document.getElementById("clientName").value || "cliente";
     const nombreArchivo = nombreCliente.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^a-z0-9ñ-]/g, "");
@@ -678,6 +763,7 @@ permitirSoloUno(["unitModeUber", "unitModeMulti", "unitModeNormal", "unitModeMot
 permitirSoloUno(["coberturaAmplia", "coberturaLimitada", "coberturaRC"]);
 aseguradoras.forEach((aseguradora) => document.getElementById(aseguradora.checkId).addEventListener("change", llenarCoberturasAutomaticas));
 document.querySelectorAll(".payment__Mode").forEach((check) => check.addEventListener("change", actualizarOpcionesPago));
+document.getElementById("agregarCobertura")?.addEventListener("click", agregarCoberturaAdicional);
 document.getElementById("generarPDF").addEventListener("click", generarPDF);
 document.getElementById("limpiarFormulario").addEventListener("click", limpiarFormulario);
 llenarDeduciblesSinDeducible();

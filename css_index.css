@@ -671,6 +671,66 @@ main{
     max-width: 170px;
 }
 
+.coverageActions {
+    min-width: 0;
+    display: flex;
+    justify-content: flex-start;
+    margin: -4px 0 12px;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    width: fit-content;
+}
+
+.coverageActions__Button {
+    border: 1px solid #b9d5f4;
+    background-color: #eff6ff;
+    color: #174a7c;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.coverageActions__Button:hover {
+    background-color: #dbeafe;
+}
+
+.additionalCoverage__NameCell {
+    gap: 8px;
+    flex-direction: column;
+}
+
+.additionalCoverage__NameInput {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #cfe0f5;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+.additionalCoverage__Delete {
+    width: 100%;
+    border: 1px solid #fecaca;
+    background-color: #fff1f2;
+    color: #b91c1c;
+    border-radius: 5px;
+    padding: 7px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.additionalCoverage__Delete:hover {
+    background-color: #fee2e2;
+}
+
+.coverageMatrix .additionalCoverage__Input {
+    max-width: 120px;
+}
+
 .coverageMatrix .rc__Input,
 .coverageMatrix .rco__Input,
 .coverageMatrix .gm__Input,
@@ -812,4 +872,94 @@ main{
 .price__Table .payment__Breakdown input {
     box-sizing: border-box;
     max-width: 100%;
+}
+
+@media (max-width: 1400px) {
+    main {
+        padding: 22px 22px;
+    }
+
+    .client__Sec {
+        gap: 16px;
+    }
+
+    .client__Data,
+    .unit__Data {
+        padding: 14px 16px;
+        gap: 8px 14px;
+        grid-template-columns: 92px minmax(0, 1fr) 92px;
+    }
+
+    .unit__Data {
+        grid-template-columns: 92px minmax(0, 1fr) 128px;
+    }
+
+    .client__Data h1,
+    .unit__Data h1 {
+        margin-top: 4px;
+        font-size: 20px;
+    }
+
+    .client__Input,
+    .unit__Input,
+    .agente__List,
+    input,
+    select {
+        min-width: 0;
+        font-size: 13px;
+    }
+
+    .side__Options {
+        gap: 8px;
+    }
+
+    .unit__ChoiceBlock {
+        gap: 6px;
+    }
+
+    .unit__ChoicePanel {
+        align-self: center;
+    }
+}
+
+@media (max-width: 1180px) {
+    .client__Sec {
+        grid-template-columns: 1fr;
+    }
+
+    .client__Data,
+    .unit__Data {
+        max-width: none;
+        grid-template-columns: 105px minmax(0, 1fr) 130px;
+    }
+
+    .unit__Data {
+        grid-template-columns: 105px minmax(0, 1fr) 150px;
+    }
+}
+
+@media (max-width: 760px) {
+    .client__Data,
+    .unit__Data {
+        grid-template-columns: 1fr;
+    }
+
+    .client__info,
+    .unit__info,
+    .client__Input,
+    .unit__Input,
+    .side__Title,
+    .side__Options,
+    .unit__ChoicePanel,
+    .unit__CoveragePanel {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .side__Options,
+    .unit__ChoiceBlock,
+    .unit__CoveragePanel {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
 }
